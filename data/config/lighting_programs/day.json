@@ -1,0 +1,6 @@
+{
+    "start_time": 1200,
+    "end_time": 1900,
+    "start": {"red": 200, "blue": 150, "white": 150},
+    "end": {"red": 200, "blue": 150, "white": 150}
+}
