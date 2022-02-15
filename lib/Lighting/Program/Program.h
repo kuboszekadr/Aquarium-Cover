@@ -28,7 +28,7 @@ namespace Lighting
         std::array<int, 3> _start;
         std::array<int, 3> _diff;
     };
-    static std::map<const char *, Program *> programs;
+    extern std::map<const char *, Program *> programs;
 
 }
 

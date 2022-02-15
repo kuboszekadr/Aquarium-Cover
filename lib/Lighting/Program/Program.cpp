@@ -1,5 +1,7 @@
 #include "Program.h"
 
+std::map<const char *, Lighting::Program*> Lighting::programs = std::map<const char*, Lighting::Program*>();
+
 Lighting::Program::Program(const char *name,
                            uint32_t start_time,
                            uint32_t end_time,
