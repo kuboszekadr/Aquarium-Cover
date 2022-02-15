@@ -9,7 +9,6 @@ namespace Lighting
     class Cover : public Adafruit_NeoPixel
     {
     public:
-        static std::vector<Cover> covers;
 
         Cover(uint8_t order, uint16_t pin, uint16_t pixels_amount);
         void start();
@@ -19,6 +18,7 @@ namespace Lighting
     private:
         uint8_t _order = 0;
     };
+    extern std::vector<Cover*> covers;
 }
 
 #endif

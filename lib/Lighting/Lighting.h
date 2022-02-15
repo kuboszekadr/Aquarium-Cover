@@ -8,8 +8,10 @@
 
 #include "Cover/Cover.h"
 #include "Program/Program.h"
+#include "Config/Config.h"
 
 #include <ESP32Time.h>
+#include <FS.h>
 
 namespace Lighting
 {
@@ -17,7 +19,7 @@ namespace Lighting
     void loadProgram(const char *file_name);
     void begin();
     void loop();
-    void loopCover(Cover &cover, uint32_t timestamp);
+    void loopCover(Cover *cover, uint32_t timestamp);
 
     Program *getProgramToRun(uint32_t timestamp, uint32_t offset);
 }
