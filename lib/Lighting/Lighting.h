@@ -10,15 +10,18 @@
 #include "Program/Program.h"
 #include "Config/Config.h"
 
+#include <ArduinoJson.h>
 #include <ESP32Time.h>
 #include <FS.h>
 
+
 namespace Lighting
 {
-    void loadConfigs();
-    void loadProgram(const char *file_name);
+    void setup();
     void begin();
     void loop();
+    
+    void loadProgram(const char *file_name);
     void loopCover(Cover *cover, uint32_t timestamp);
 
     Program *getProgramToRun(uint32_t timestamp, uint32_t offset);

@@ -5,32 +5,25 @@ std::map<const char *, Lighting::Program*> Lighting::programs = std::map<const c
 Lighting::Program::Program(const char *name,
                            uint32_t start_time,
                            uint32_t end_time,
-                           std::array<int, 3> &start,
-                           std::array<int, 3> &end)
+                           Color color_start,
+                           Color color_end)
 {
     _start_time = start_time;
-    _end_time = end_time;
-
-    _start = start;
-
-    for (uint8_t i = 0; i < _start.size(); i++)
-    {
-        _diff[i] = end[i] - _start[i];
-    }
-    
+    _end_time = end_time;    
 }
 
 uint32_t Lighting::Program::getColor(uint32_t timestamp, uint32_t offset)
 {
     float _progress = progress(timestamp, offset);
 
-    uint32_t r = (uint8_t)(_start[0] + _diff[0] * _progress);
-    uint32_t b = (uint8_t)(_start[1] + _diff[1] * _progress);
-    uint32_t w = (uint8_t)(_start[2] + _diff[2] * _progress);
+    return 0;
+    // uint32_t r = (uint8_t)(_start[0] + _diff[0] * _progress);
+    // uint32_t b = (uint8_t)(_start[1] + _diff[1] * _progress);
+    // uint32_t w = (uint8_t)(_start[2] + _diff[2] * _progress);
 
-    uint32_t color = (b << 16) | (r << 8) | w;
+    // uint32_t color = (b << 16) | (r << 8) | w;
     
-    return color;
+    // return color;
 }
 
 bool Lighting::Program::isExecutable(uint32_t timestamp, uint32_t offset)

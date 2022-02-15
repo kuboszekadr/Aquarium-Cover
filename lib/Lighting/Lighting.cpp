@@ -23,7 +23,7 @@ void Lighting::loopCover(Cover *cover, uint32_t timestamp)
         {
             color = program->getColor(timestamp, offset);
         }
-        
+
         cover->setPixelColor(pixel, color);
         offset += LIGHTING_PROGRAM_OFFSET;
     }
@@ -49,7 +49,7 @@ void Lighting::begin()
     }
 }
 
-void Lighting::loadConfigs()
+void Lighting::setup()
 {
     const char root_path[32] = "/config/lighting_programs";
     
@@ -59,10 +59,17 @@ void Lighting::loadConfigs()
     while (file)
     {
         file = root.openNextFile();
+
         Config config = Config(file.name(), root_path);
         config.load();
 
-        // Program();
+        auto data = config.data;
+
+        auto data_color_start = data["start"];
+
+        // Program(file_name,
+        //         data["start_time"].as<int>(),
+        //         data["end_time"].as<int>(),
+        //         );
     }
-    
 }
