@@ -23,8 +23,9 @@ void loop()
 
 void setupTasks()
 {
+    char task[30] = "0 0 4 * * *"; 
     Cron.create(
-        "0 0 4 * * *",
+        task,
         Device::setupTime,
         false);
 }
