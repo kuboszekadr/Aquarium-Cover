@@ -26,9 +26,6 @@ namespace Lighting
         uint32_t _start_time;
         uint32_t _end_time;
 
-        std::array<int, 3> _start;
-        std::array<int, 3> _end;
-
         Color _color_start;
         Color _color_diff;
     };
