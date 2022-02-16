@@ -10,20 +10,18 @@ Lighting::Program::Program(const char *name,
 {
     _start_time = start_time;
     _end_time = end_time;    
+
+    _color_start = color_start;
+    _color_diff = color_end - color_start;
 }
 
 uint32_t Lighting::Program::getColor(uint32_t timestamp, uint32_t offset)
 {
     float _progress = progress(timestamp, offset);
-
-    return 0;
-    // uint32_t r = (uint8_t)(_start[0] + _diff[0] * _progress);
-    // uint32_t b = (uint8_t)(_start[1] + _diff[1] * _progress);
-    // uint32_t w = (uint8_t)(_start[2] + _diff[2] * _progress);
-
-    // uint32_t color = (b << 16) | (r << 8) | w;
+    Color color = _color_start + _color_diff * _progress;
     
-    // return color;
+    uint32_t result = color.toPixelColor();
+    return result;
 }
 
 bool Lighting::Program::isExecutable(uint32_t timestamp, uint32_t offset)

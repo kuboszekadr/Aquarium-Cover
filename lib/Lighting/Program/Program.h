@@ -1,18 +1,13 @@
 #ifndef Lighting_Program_h
 #define Lighting_Program_h
 
+#include "Color.hpp"
+
 #include <map>
 #include <array>
 
 namespace Lighting
 {
-    struct Color
-    {
-        uint8_t red;
-        uint8_t blue;
-        uint8_t white;
-    };
-
     class Program
     {
     public:
