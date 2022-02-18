@@ -1,7 +1,7 @@
 #ifndef Lighting_Color_h
 #define Lighting_Color_h
 
-#include <Arduino.h>
+#include <cstdint>
 
 namespace Lighting
 {
@@ -47,7 +47,18 @@ namespace Lighting
             result.blue = blue + color.blue;
 
             return result;
-        }
+        };
+
+        bool operator==(Color color)
+        {
+            bool result = true;
+
+            result = result & (this->red == color.red); 
+            result = result & (this->blue == color.blue); 
+            result = result & (this->white == color.white);
+
+            return result; 
+        };        
     };
 
 }
