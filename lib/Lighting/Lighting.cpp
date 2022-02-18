@@ -52,7 +52,7 @@ void Lighting::begin()
 void Lighting::setup()
 {
     const char root_path[32] = "/config/lighting_programs";
-    
+
     File root = SPIFFS.open(root_path);
     File file = root.openNextFile();
 
@@ -66,10 +66,22 @@ void Lighting::setup()
         auto data = config.data;
 
         auto data_color_start = data["start"];
+        Color color_start = {
+            data_color_start["red"],
+            data_color_start["blue"],
+            data_color_start["white"]};
 
-        // Program(file_name,
-        //         data["start_time"].as<int>(),
-        //         data["end_time"].as<int>(),
-        //         );
+        auto data_color_end = data["end"];
+        Color color_end = {
+            data_color_end["red"],
+            data_color_end["blue"],
+            data_color_end["white"]};
+
+        Program(file.name(),
+                data["start_time"].as<int>(),
+                data["end_time"].as<int>(),
+                color_start,
+                color_end
+                );
     }
 }
