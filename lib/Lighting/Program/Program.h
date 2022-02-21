@@ -17,10 +17,10 @@ namespace Lighting
                 Color color_start,
                 Color color_end);
 
-        uint32_t getColor(uint32_t timestamp, uint32_t offset);
+        uint32_t getColor(uint32_t timestamp, uint32_t offset=0);
 
-        bool isExecutable(uint32_t timestamp, uint32_t offset);
-        float progress(uint32_t timestamp, uint32_t offset);
+        bool isExecutable(uint32_t timestamp, uint32_t offset=0);
+        float progress(uint32_t timestamp, uint32_t offset=0);
 
     private:
         uint32_t _start_time;
@@ -30,7 +30,6 @@ namespace Lighting
         Color _color_diff;
     };
     extern std::map<const char *, Program *> programs;
-
 }
 
 #endif

@@ -13,6 +13,8 @@ Lighting::Program::Program(const char *name,
 
     _color_start = color_start;
     _color_diff = color_end - color_start;
+
+    programs.insert(std::make_pair(name, this));
 }
 
 uint32_t Lighting::Program::getColor(uint32_t timestamp, uint32_t offset)
