@@ -1,4 +1,4 @@
-#include "../lib/Lighting/Program/Color.hpp"
+#include "../lib/Lighting/Program/Color.h"
 
 #include <unity.h>
 
