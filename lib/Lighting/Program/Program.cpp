@@ -14,6 +14,8 @@ Lighting::Program::Program(const char *name,
     _color_start = color_start;
     _color_diff = color_end - color_start;
 
+    std::memcpy(_name, name, 11);
+
     programs.insert(std::make_pair(name, this));
 }
 
@@ -44,4 +46,16 @@ float Lighting::Program::progress(uint32_t timestamp, uint32_t offset)
     result = (result * 1.0) / (end_time - start_time);
 
     return result;
+}
+
+Lighting::Program *Lighting::getProgramToRun(uint32_t timestamp, uint32_t offset)
+{
+    for (const auto &program : programs)
+    {
+        if (program.second->isExecutable(timestamp, offset))
+        {
+            return program.second;
+        }
+    }
+    return nullptr;
 }
