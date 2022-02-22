@@ -2,6 +2,8 @@
 #include "../lib/Lighting/Program/Program.cpp"
 
 #include <unity.h>
+#include <string.h>
+#include <stdio.h>
 
 using namespace Lighting;
 
@@ -71,6 +73,27 @@ void test_isExecutable()
     TEST_ASSERT_FALSE(result);
 }
 
+void test_getProgramToRun()
+{
+    char *actual = getProgramToRun(900)->name();
+    TEST_ASSERT_EQUAL_STRING("dawn", actual);
+
+    actual = getProgramToRun(1200)->name();
+    TEST_ASSERT_EQUAL_STRING("dawn", actual);
+
+    actual = getProgramToRun(1201)->name();
+    TEST_ASSERT_EQUAL_STRING("daylight", actual);
+
+    actual = getProgramToRun(1500)->name();
+    TEST_ASSERT_EQUAL_STRING("daylight", actual);
+
+    actual = getProgramToRun(1700)->name();
+    TEST_ASSERT_EQUAL_STRING("dusk", actual);
+
+    TEST_ASSERT_TRUE(getProgramToRun(1801) == nullptr);
+    TEST_ASSERT_TRUE(getProgramToRun(859) == nullptr);
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -78,6 +101,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_programsSize);
     RUN_TEST(test_progress);
     RUN_TEST(test_isExecutable);
+    RUN_TEST(test_getProgramToRun);
 
     UNITY_END();
 }
