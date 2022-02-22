@@ -29,18 +29,6 @@ void Lighting::loopCover(Cover *cover, uint32_t timestamp)
     }
 }
 
-Lighting::Program *Lighting::getProgramToRun(uint32_t timestamp, uint32_t offset)
-{
-    for (const auto &program : programs)
-    {
-        if (program.second->isExecutable(timestamp, offset))
-        {
-            return program.second;
-        }
-    }
-    return nullptr;
-}
-
 void Lighting::begin()
 {
     for (auto &cover : covers)

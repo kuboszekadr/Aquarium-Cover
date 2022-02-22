@@ -24,7 +24,6 @@ namespace Lighting
     void loadProgram(const char *file_name);
     void loopCover(Cover *cover, uint32_t timestamp);
 
-    Program *getProgramToRun(uint32_t timestamp, uint32_t offset);
 }
 
 #endif
