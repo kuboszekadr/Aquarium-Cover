@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "PlatformIO",
+			"task": "Build Filesystem Image (prod)",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"group": "build",
+			"label": "PlatformIO: Build Filesystem Image (prod)"
+		},
+		{
+			"type": "PlatformIO",
+			"task": "Upload and Monitor (prod)",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"label": "PlatformIO: Upload and Monitor (prod)"
+		}
+	]
+}
