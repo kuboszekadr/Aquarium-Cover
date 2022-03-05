@@ -7,7 +7,6 @@ void Services::ServiceRelay::create()
 
 void Services::ServiceRelay::get(AsyncWebServerRequest *request)
 {
-    Serial.println("Hi");
     StaticJsonDocument<200> doc;
     JsonArray result = doc.to<JsonArray>();
 

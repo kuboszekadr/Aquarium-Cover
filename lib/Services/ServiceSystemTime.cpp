@@ -7,7 +7,6 @@ void Services::ServiceSystemTime::create()
 
 void Services::ServiceSystemTime::get(AsyncWebServerRequest *request)
 {
-    Serial.println("Hello from ESP");
     ESP32Time t;
     String system_time = t.getTime("%F %X");
 

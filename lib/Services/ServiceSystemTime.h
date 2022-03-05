@@ -12,7 +12,6 @@ namespace Services
     public:
         void create();
         static void get(AsyncWebServerRequest *request);
-        void dummy() {Serial.println("test");};
     };
 }
 

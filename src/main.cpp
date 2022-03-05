@@ -35,7 +35,6 @@ void setup()
     Services::server.begin();
 
     Notification::push("Cover-init", "Device started");
-    Serial.println("Started");
 }
 
 void loop()

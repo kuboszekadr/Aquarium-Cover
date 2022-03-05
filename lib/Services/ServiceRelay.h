@@ -18,40 +18,6 @@ namespace Services
     private:
         const char _uri[32] = "";
     };
-
-    // class Config()
-    // {
-    //     Config(uri);
-    //     void create();
-
-    //     get();
-    //     post();
-    // };
-
-    // class SystemTime()
-    // {
-    //     SystemTime(uri);
-    //     void create();
-
-    // void get();
-    // };
-
-    // class Readings()
-    // {
-    //     Readings(uri);
-    //     create();
-
-    //     get();
-    // };
-
-    // class Firmware()
-    // {
-    //     Firmware(uri);
-    //     create_serivice();
-
-    //     upload();
-    //     onrequest();
-    // };
 }
 
 #endif
