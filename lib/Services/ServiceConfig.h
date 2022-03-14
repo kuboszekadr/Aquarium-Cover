@@ -3,19 +3,20 @@
 
 #include "Services.h"
 
+#include "Config/Config.h"
+
+#include <ArduinoJson.h>
+#include <AsyncJson.h>
+
 namespace Services
 {
     class ServiceConfig : public IService
     {
     public:
-        ServiceConfig(const char *uri);
         void create();
 
         static void get(AsyncWebServerRequest *request);
         static void post(AsyncWebServerRequest *request, JsonVariant &json);
-
-    private:
-        const char _uri[32] = "";
     };
 }
 

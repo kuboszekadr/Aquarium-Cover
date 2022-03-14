@@ -1,6 +1,7 @@
 #include "Lighting.h"
 #include "Services.h"
 #include "ServiceSystemTime.h"
+#include "ServiceConfig.h"
 
 #include "Device/Device.h"
 #include "Logger/Logger.h"
@@ -17,6 +18,7 @@ void streamToSerial(const char *module_name,
                     const char *timestamp);
 
 Services::ServiceSystemTime time_service = Services::ServiceSystemTime();
+Services::ServiceConfig config_service = Services::ServiceConfig();
 
 void setup()
 {
