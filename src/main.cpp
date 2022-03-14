@@ -31,6 +31,7 @@ void setup()
     Device::setupTime();
 
     setupTasks();
+    Lighting::setup();
     Lighting::begin();
 
     Services::init();

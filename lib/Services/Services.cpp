@@ -10,7 +10,6 @@ Services::IService::IService()
 
 void Services::init()
 {
-    Serial.println(services.size());
     for(const auto& service : services)
     {
         service->create();

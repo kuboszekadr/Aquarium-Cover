@@ -14,7 +14,6 @@
 #include <ESP32Time.h>
 #include <FS.h>
 
-
 namespace Lighting
 {
     void setup();

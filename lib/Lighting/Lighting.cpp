@@ -39,16 +39,15 @@ void Lighting::begin()
 
 void Lighting::setup()
 {
-    const char root_path[32] = "/config/lighting_programs";
+    const char root_path[32] = "/config/lighting";
 
     File root = SPIFFS.open(root_path);
     File file = root.openNextFile();
 
     while (file)
     {
-        file = root.openNextFile();
-
-        Config config = Config(file.name(), root_path);
+        Config config = Config();
+        config.setPath(file.name());
         config.load();
 
         auto data = config.data;
@@ -71,5 +70,7 @@ void Lighting::setup()
                 color_start,
                 color_end
                 );
+
+        file = root.openNextFile();
     }
 }
