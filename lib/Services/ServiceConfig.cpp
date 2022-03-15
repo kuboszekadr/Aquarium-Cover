@@ -11,7 +11,7 @@ void Services::ServiceConfig::create()
     AsyncCallbackJsonWebHandler *post_handler = new AsyncCallbackJsonWebHandler(
         "/config",
         post);
-    handler->setMethod(HTTP_POST);
+    post_handler->setMethod(HTTP_POST);
     server.addHandler(post_handler);
 }
 
