@@ -15,7 +15,7 @@ namespace Services
     public:
         void create();
 
-        static void get(AsyncWebServerRequest *request);
+        static void get(AsyncWebServerRequest *request, JsonVariant &json);
         static void post(AsyncWebServerRequest *request, JsonVariant &json);
     };
 }

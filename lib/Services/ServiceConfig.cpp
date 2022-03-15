@@ -2,21 +2,27 @@
 
 void Services::ServiceConfig::create()
 {
-    server.on("/config", HTTP_GET, get);
+    AsyncCallbackJsonWebHandler *get_handler = new AsyncCallbackJsonWebHandler(
+        "/config",
+        get);
+    get_handler->setMethod(HTTP_GET);
+    server.addHandler(get_handler);
 
-    AsyncCallbackJsonWebHandler *handler = new AsyncCallbackJsonWebHandler(
+    AsyncCallbackJsonWebHandler *post_handler = new AsyncCallbackJsonWebHandler(
         "/config",
         post);
     handler->setMethod(HTTP_POST);
-    server.addHandler(handler);
+    server.addHandler(post_handler);
 }
 
-void Services::ServiceConfig::get(AsyncWebServerRequest *request)
+void Services::ServiceConfig::get(AsyncWebServerRequest *request, JsonVariant &json)
 {
-    auto remote_ip = request->client()->remoteIP();
+    JsonObject obj = json.as<JsonObject>();
+    
+    const char* file = obj["file_name"];
+    const char* folder = obj["folder"] | "config";
 
-    const char *arg = request->argName(0).c_str();
-    Config config = Config(arg);
+    Config config = Config(file, folder);
     config.load();
 
     char response[256] = "";
@@ -32,11 +38,16 @@ void Services::ServiceConfig::post(AsyncWebServerRequest *request, JsonVariant &
 {
     JsonObject obj = json.as<JsonObject>();
 
-    const char *arg = request->argName(0).c_str();
-    Config config = Config(arg);
+    const char* file = obj["file_name"];
+    const char* folder = obj["folder"] | "config";
+    
+    StaticJsonDocument<512> doc;
+    deserializeJson(doc, obj["content"]);
+
+    Config config = Config(file, folder);
     config.load();
 
-    config.data = obj;
+    config.data = doc;
 
     int status = config.save();
     if (status != CONFIG_SAVED)
