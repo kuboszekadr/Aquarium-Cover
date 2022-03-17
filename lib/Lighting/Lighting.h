@@ -23,6 +23,10 @@ namespace Lighting
     void loadProgram(const char *file_name);
     void loopCover(Cover *cover, uint32_t timestamp);
 
+    uint32_t secondToMin(uint32_t value);
+
 }
+
+void extractFileName(const char* path, char* buff);
 
 #endif
