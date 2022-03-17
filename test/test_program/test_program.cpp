@@ -39,59 +39,59 @@ void test_programsSize()
 
 void test_getColor()
 {
-    uint32_t actual = dusk.getColor(1800);
+    uint32_t actual = dusk.getColor(180000);
     TEST_ASSERT_EQUAL(3289650, actual);
 
-    actual = dusk.getColor(1500);
+    actual = dusk.getColor(150000);
     TEST_ASSERT_EQUAL(6579300, actual);
 
-    actual = dusk.getColor(1630);
+    actual = dusk.getColor(163000);
     TEST_ASSERT_EQUAL(4934475, actual);
 }
 
 void test_progress()
 {
-    float progress = dawn.progress(900, 0);
+    float progress = dawn.progress(90000, 0);
     TEST_ASSERT_EQUAL(0, progress);
 
-    progress = dawn.progress(1200, 0);
+    progress = dawn.progress(120000, 0);
     TEST_ASSERT_EQUAL(1, progress);
 
-    progress = dusk.progress(1630, 0);
+    progress = dusk.progress(163000, 0);
     TEST_ASSERT_EQUAL(0.5, progress);
 }
 
 void test_isExecutable()
 {
-    bool result = dusk.isExecutable(1500);
+    bool result = dusk.isExecutable(150000);
     TEST_ASSERT_TRUE(result);
 
-    result = dusk.isExecutable(1759);
+    result = dusk.isExecutable(175900);
     TEST_ASSERT_TRUE(result);
 
-    result = dusk.isExecutable(1801);
+    result = dusk.isExecutable(180100);
     TEST_ASSERT_FALSE(result);
 }
 
 void test_getProgramToRun()
 {
-    char *actual = getProgramToRun(900)->name();
+    char *actual = getProgramToRun(90000)->name();
     TEST_ASSERT_EQUAL_STRING("dawn", actual);
 
-    actual = getProgramToRun(1200)->name();
+    actual = getProgramToRun(120000)->name();
     TEST_ASSERT_EQUAL_STRING("dawn", actual);
 
-    actual = getProgramToRun(1201)->name();
+    actual = getProgramToRun(120100)->name();
     TEST_ASSERT_EQUAL_STRING("daylight", actual);
 
-    actual = getProgramToRun(1500)->name();
+    actual = getProgramToRun(150000)->name();
     TEST_ASSERT_EQUAL_STRING("daylight", actual);
 
-    actual = getProgramToRun(1700)->name();
+    actual = getProgramToRun(170000)->name();
     TEST_ASSERT_EQUAL_STRING("dusk", actual);
 
-    TEST_ASSERT_TRUE(getProgramToRun(1801) == nullptr);
-    TEST_ASSERT_TRUE(getProgramToRun(859) == nullptr);
+    TEST_ASSERT_TRUE(getProgramToRun(180100) == nullptr);
+    TEST_ASSERT_TRUE(getProgramToRun(85900) == nullptr);
 }
 
 int main(int argc, char **argv)
