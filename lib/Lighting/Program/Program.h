@@ -3,6 +3,8 @@
 
 #include "Color.hpp"
 
+#include <Arduino.h>
+
 #include <map>
 #include <array>
 #include <cstring>

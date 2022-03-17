@@ -8,14 +8,13 @@ Lighting::Program::Program(const char *name,
                            Color color_start,
                            Color color_end)
 {
-    _start_time = start_time;
-    _end_time = end_time;    
+    _start_time = start_time * 100;
+    _end_time = end_time * 100;    
 
     _color_start = color_start;
     _color_diff = color_end - color_start;
 
     std::memcpy(_name, name, 11);
-
     programs.insert(std::make_pair(name, this));
 }
 
@@ -52,7 +51,8 @@ Lighting::Program *Lighting::getProgramToRun(uint32_t timestamp, uint32_t offset
 {
     for (const auto &program : programs)
     {
-        if (program.second->isExecutable(timestamp, offset))
+        bool is_executable = program.second->isExecutable(timestamp, offset); 
+        if (is_executable)
         {
             return program.second;
         }
