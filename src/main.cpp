@@ -2,6 +2,7 @@
 #include "Services.h"
 #include "ServiceSystemTime.h"
 #include "ServiceConfig.h"
+#include "ServiceLighting.h"
 
 #include "Device/Device.h"
 #include "Logger/Logger.h"
@@ -19,10 +20,11 @@ void streamToSerial(const char *module_name,
 
 Services::ServiceSystemTime time_service = Services::ServiceSystemTime();
 Services::ServiceConfig config_service = Services::ServiceConfig();
+Services::ServiceLighting lighting_service = Services::ServiceLighting();
 
 Lighting::Cover left_cover = Lighting::Cover(1, 1, 6);
-Lighting::Cover middle_cover = Lighting::Cover(2, 2, 8);
-Lighting::Cover right_cover = Lighting::Cover(3, 3, 6);
+// Lighting::Cover middle_cover = Lighting::Cover(2, 2, 8);
+// Lighting::Cover right_cover = Lighting::Cover(3, 3, 6);
 
 void setup()
 {
@@ -47,7 +49,7 @@ void setup()
 void loop()
 {
     Cron.delay();
-    Lighting::loop();
+    // Lighting::loop();
     WiFiManager::manageConnection();
 }
 
