@@ -1,7 +1,7 @@
 #ifndef ServiceLighting_h
 #define ServiceLighting_h
 
-#include "Services.h"
+#include "Services/Services.h"
 
 #include "../Lighting/Program/Program.h"
 

@@ -1,8 +1,9 @@
 #include "Lighting.h"
-#include "Services.h"
-#include "ServiceSystemTime.h"
-#include "ServiceConfig.h"
 #include "ServiceLighting.h"
+
+#include "Services/Services.h"
+#include "Services/ServiceSystemTime/ServiceSystemTime.h"
+#include "Services/ServiceConfig/ServiceConfig.h"
 
 #include "Device/Device.h"
 #include "Logger/Logger.h"
