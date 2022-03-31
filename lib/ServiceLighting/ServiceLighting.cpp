@@ -37,3 +37,5 @@ void Services::ServiceLighting::get(AsyncWebServerRequest *request)
         "application/json",
         response);
 }
+
+Services::ServiceLighting lighting_service = Services::ServiceLighting();
