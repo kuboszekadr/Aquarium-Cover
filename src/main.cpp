@@ -4,24 +4,18 @@
 #include "Services/Services.h"
 #include "Services/ServiceSystemTime/ServiceSystemTime.h"
 #include "Services/ServiceConfig/ServiceConfig.h"
+#include "Services/ServiceOTA/ServiceOTA.h"
 
 #include "Device/Device.h"
 #include "Logger/Logger.h"
 #include "Notification/Notification.h"
+#include "Logger/Streams/StreamSerial.hpp"
 
 #include <Arduino.h>
 #include <SPIFFS.h>
 #include <CronAlarms.h>
 
 void setupTasks();
-void streamToSerial(const char *module_name,
-                    const char *log_level,
-                    const char *msg,
-                    const char *timestamp);
-
-Services::ServiceSystemTime time_service = Services::ServiceSystemTime();
-Services::ServiceConfig config_service = Services::ServiceConfig();
-Services::ServiceLighting lighting_service = Services::ServiceLighting();
 
 Lighting::Cover left_cover = Lighting::Cover(1, 1, 6);
 // Lighting::Cover middle_cover = Lighting::Cover(2, 2, 8);
@@ -30,12 +24,9 @@ Lighting::Cover left_cover = Lighting::Cover(1, 1, 6);
 void setup()
 {
     Serial.begin(115200);
-    Logger::addStream(streamToSerial);
+    Logger::addStream(Streams::streamToSerial);
 
-    Device::setupSPIFSS();
-    Device::setupWiFi();
-    Device::setupAPI();
-    Device::setupTime();
+    Device::setup();
 
     setupTasks();
     Lighting::setup();
@@ -50,7 +41,7 @@ void setup()
 void loop()
 {
     Cron.delay();
-    // Lighting::loop();
+    Lighting::loop();
     WiFiManager::manageConnection();
 }
 
@@ -61,16 +52,4 @@ void setupTasks()
         task,
         Device::setupTime,
         false);
-}
-
-void streamToSerial(const char *module_name,
-                    const char *log_level,
-                    const char *msg,
-                    const char *timestamp)
-{
-  char _msg[256];
-  sprintf(_msg,
-          "%s | %s | [%s] %s",
-          module_name, log_level, timestamp, msg);
-  Serial.println(_msg);
 }
