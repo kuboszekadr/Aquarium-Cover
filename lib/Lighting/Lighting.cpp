@@ -5,6 +5,11 @@ void Lighting::loop()
     ESP32Time ts;
     uint32_t timestamp = ts.getTime("%H%M%S").toInt();
 
+    loop(timestamp);
+}
+
+void Lighting::loop(uint32_t timestamp)
+{
     for (auto &cover : covers)
     {
         loopCover(cover, timestamp);

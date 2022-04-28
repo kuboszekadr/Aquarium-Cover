@@ -18,7 +18,9 @@ namespace Lighting
 {
     void setup();
     void begin();
+    
     void loop();
+    void loop(uint32_t timestamp);
     
     void loadProgram(const char *file_name);
     void loopCover(Cover *cover, uint32_t timestamp);
