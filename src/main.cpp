@@ -17,7 +17,7 @@
 
 void setupTasks();
 
-Lighting::Cover left_cover = Lighting::Cover(1, 1, 6);
+Lighting::Cover left_cover = Lighting::Cover(1, 12, 6);
 // Lighting::Cover middle_cover = Lighting::Cover(2, 2, 8);
 // Lighting::Cover right_cover = Lighting::Cover(3, 3, 6);
 
