@@ -1,6 +1,6 @@
 #include "Program.h"
 
-std::map<const char *, Lighting::Program*> Lighting::programs = std::map<const char*, Lighting::Program*>();
+std::map<const char *, Lighting::Program *> Lighting::programs = std::map<const char *, Lighting::Program *>();
 
 Lighting::Program::Program(const char *name,
                            uint32_t start_time,
@@ -8,8 +8,8 @@ Lighting::Program::Program(const char *name,
                            Color color_start,
                            Color color_end)
 {
-    _start_time = start_time * 100;
-    _end_time = end_time * 100;    
+    _start_time = Time(start_time*100).epochs();
+    _end_time = Time(end_time*100).epochs();
 
     _color_start = color_start;
     _color_diff = color_end - color_start;
@@ -22,7 +22,7 @@ uint32_t Lighting::Program::getColor(uint32_t timestamp, uint32_t offset)
 {
     float _progress = progress(timestamp, offset);
     Color color = _color_start + _color_diff * _progress;
-    
+
     uint32_t result = color.toPixelColor();
     return result;
 }
@@ -51,7 +51,7 @@ Lighting::Program *Lighting::getProgramToRun(uint32_t timestamp, uint32_t offset
 {
     for (const auto &program : programs)
     {
-        bool is_executable = program.second->isExecutable(timestamp, offset); 
+        bool is_executable = program.second->isExecutable(timestamp, offset);
         if (is_executable)
         {
             return program.second;

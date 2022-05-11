@@ -2,8 +2,7 @@
 #define Lighting_Program_h
 
 #include "Color.hpp"
-
-#include <Arduino.h>
+#include "../Time.hpp"
 
 #include <map>
 #include <array>
@@ -25,6 +24,8 @@ namespace Lighting
 
         bool isExecutable(uint32_t timestamp, uint32_t offset = 0);
         float progress(uint32_t timestamp, uint32_t offset = 0);
+
+
 
     private:
         uint32_t _start_time;

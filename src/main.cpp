@@ -1,5 +1,6 @@
 #include "Lighting.h"
 #include "ServiceLighting.h"
+#include "Demo/Demo.h"
 
 #include "Services/Services.h"
 #include "Services/ServiceSystemTime/ServiceSystemTime.h"

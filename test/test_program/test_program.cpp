@@ -39,7 +39,8 @@ void test_programsSize()
 
 void test_getColor()
 {
-    uint32_t actual = dusk.getColor(180000);
+    Time t = Time(18, 0, 0);
+    uint32_t actual = dusk.getColor(t.epochs());
     TEST_ASSERT_EQUAL(3289650, actual);
 
     actual = dusk.getColor(150000);
@@ -51,47 +52,65 @@ void test_getColor()
 
 void test_progress()
 {
-    float progress = dawn.progress(90000, 0);
-    TEST_ASSERT_EQUAL(0, progress);
+    Time t = Time(9, 0, 0);
+    float progress = dawn.progress(t.epochs(), 0);
+    TEST_ASSERT_EQUAL_FLOAT(0, progress);
 
-    progress = dawn.progress(120000, 0);
-    TEST_ASSERT_EQUAL(1, progress);
+    t = Time(12, 0, 0);
+    progress = dawn.progress(t.epochs(), 0);
+    TEST_ASSERT_EQUAL_FLOAT(1, progress);
 
-    progress = dusk.progress(163000, 0);
-    TEST_ASSERT_EQUAL(0.5, progress);
+    t = Time(16, 30, 0);
+    progress = dusk.progress(t.epochs(), 0);
+    TEST_ASSERT_EQUAL_FLOAT(0.5, progress);
+
+    t = Time(16, 21, 0);
+    progress = dusk.progress(t.epochs(), 0);
+    TEST_ASSERT_EQUAL_FLOAT(0.45, progress);
 }
 
 void test_isExecutable()
 {
-    bool result = dusk.isExecutable(150000);
+    Time t = Time(15, 0, 0);
+    bool result = dusk.isExecutable(t.epochs());
     TEST_ASSERT_TRUE(result);
 
-    result = dusk.isExecutable(175900);
+    t = Time(17, 59, 0);
+    result = dusk.isExecutable(t.epochs());
     TEST_ASSERT_TRUE(result);
 
-    result = dusk.isExecutable(180100);
+    t = Time(18, 1, 0);
+    result = dusk.isExecutable(t.epochs());
     TEST_ASSERT_FALSE(result);
 }
 
 void test_getProgramToRun()
 {
-    char *actual = getProgramToRun(90000)->name();
+    Time t = Time(9, 0, 0);
+    char *actual = getProgramToRun(t.epochs())->name();
     TEST_ASSERT_EQUAL_STRING("dawn", actual);
 
-    actual = getProgramToRun(120000)->name();
+    t = Time(12, 0, 0);
+    actual = getProgramToRun(t.epochs())->name();
     TEST_ASSERT_EQUAL_STRING("dawn", actual);
 
-    actual = getProgramToRun(120100)->name();
+    t = Time(12, 1, 0);
+    actual = getProgramToRun(t.epochs())->name();
     TEST_ASSERT_EQUAL_STRING("daylight", actual);
 
-    actual = getProgramToRun(150000)->name();
+    t = Time(15, 0, 0);
+    actual = getProgramToRun(t.epochs())->name();
     TEST_ASSERT_EQUAL_STRING("daylight", actual);
 
-    actual = getProgramToRun(170000)->name();
+   t = Time(17, 0, 0);
+    actual = getProgramToRun(t.epochs())->name();
     TEST_ASSERT_EQUAL_STRING("dusk", actual);
 
-    TEST_ASSERT_TRUE(getProgramToRun(180100) == nullptr);
-    TEST_ASSERT_TRUE(getProgramToRun(85900) == nullptr);
+    t = Time(18, 1, 0);
+    TEST_ASSERT_TRUE(getProgramToRun(t.epochs()) == nullptr);
+
+    t = Time(8, 59, 0);
+    TEST_ASSERT_TRUE(getProgramToRun(t.epochs()) == nullptr);
 }
 
 int main(int argc, char **argv)

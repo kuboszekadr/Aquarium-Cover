@@ -2,9 +2,12 @@
 
 void Lighting::loop()
 {
-    ESP32Time ts;
-    uint32_t timestamp = ts.getTime("%H%M%S").toInt();
+    ESP32Time _time = ESP32Time();
 
+    tm ts = _time.getTimeStruct();
+    Time t = Time(ts.tm_hour, ts.tm_min, ts.tm_sec);
+
+    uint32_t timestamp = t.epochs();
     loop(timestamp);
 }
 
@@ -19,16 +22,15 @@ void Lighting::loop(uint32_t timestamp)
 void Lighting::loopCover(Cover *cover, uint32_t timestamp)
 {
     uint32_t offset = LIGHTING_PROGRAM_OFFSET * (cover->order() - 1);
-    
+
     for (uint8_t pixel = 0; pixel < cover->numPixels(); pixel++)
     {
-        uint32_t offset_in_minutes = secondToMin(offset);
-        Program *program = getProgramToRun(timestamp, offset_in_minutes);
+        Program *program = getProgramToRun(timestamp, offset);
 
         uint32_t color = 0;
         if (program != nullptr)
         {
-            color = program->getColor(timestamp, offset_in_minutes);
+            color = program->getColor(timestamp, offset);
         }
 
         cover->setPixelColor(pixel, color);
@@ -54,7 +56,7 @@ void Lighting::setup()
     while (file)
     {
         char file_name[16];
-        
+
         extractFileName(file.name(), file_name);
 
         Config config = Config(file_name, root_path+1);
@@ -83,12 +85,6 @@ void Lighting::setup()
 
         file = root.openNextFile();
     }
-}
-
-uint32_t Lighting::secondToMin(uint32_t value)
-{
-    uint32_t result = (uint32_t) (value / 60) * 100;
-    result += value % 60;
 }
 
 void extractFileName(const char* path, char* buff)
