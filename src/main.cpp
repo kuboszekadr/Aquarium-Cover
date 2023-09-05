@@ -1,16 +1,20 @@
 #include "Lighting.h"
 #include "ServiceLighting.h"
+#include "Programs/Programs.h"
+
 #include "Demo/Demo.h"
+#include "Device/Device.h"
 
 #include "Services/Services.h"
 #include "Services/ServiceSystemTime/ServiceSystemTime.h"
 #include "Services/ServiceConfig/ServiceConfig.h"
 #include "Services/ServiceOTA/ServiceOTA.h"
 
-#include "Device/Device.h"
 #include "Logger/Logger.h"
+#include "Logger/Loggers/Serial.hpp"
+#include "Logger/Loggers/API.hpp"
+
 #include "Notification/Notification.h"
-#include "Logger/Streams/StreamSerial.hpp"
 
 #include <Arduino.h>
 #include <SPIFFS.h>
@@ -18,32 +22,46 @@
 
 void setupTasks();
 
-Lighting::Cover left_cover = Lighting::Cover(1, 12, 6);
-// Lighting::Cover middle_cover = Lighting::Cover(2, 2, 8);
-// Lighting::Cover right_cover = Lighting::Cover(3, 3, 6);
+Logger logger = Logger("main");
+
+Lighting::Cover left_cover = Lighting::Cover(1, 12, 1);
+
+Services::ServiceSystemTime service_time = Services::ServiceSystemTime();
+Services::ServiceOTA service_ota = Services::ServiceOTA();
+Services::ServiceLighting service_lighting = Services::ServiceLighting();
+Services::ServiceConfig config_service = Services::ServiceConfig();
+
+void GmailNotification(
+    const char *title,
+    const char *message);
 
 void setup()
 {
     Serial.begin(115200);
-    Logger::addStream(Streams::streamToSerial);
 
+    Logger::addStream(Loggers::logToSerial);
     Device::setup();
+    
+    // Logger::addStream(Loggers::logToAPI);
 
     setupTasks();
+    Device::setupTime();
+
     Lighting::setup();
     Lighting::begin();
 
     Services::init();
     Services::server.begin();
 
+    logger.log("Device is starting...");
+
+    Notification::addStream(GmailNotification);
     Notification::push("Cover-init", "Device started");
 }
 
 void loop()
 {
     Cron.delay();
-    Lighting::loop();
-    WiFiManager::manageConnection();
 }
 
 void setupTasks()
@@ -53,4 +71,19 @@ void setupTasks()
         task,
         Device::setupTime,
         false);
+
+    Cron.create(
+        "* */1 * * * *",
+        WiFiManager::manageConnection,
+        false);
+
+    Cron.create(
+        "*/5 * * * * *",
+        Lighting::loop,
+        false);
+}
+
+void GmailNotification(const char *title, const char *message)
+{
+    Device::device->postNotification(title, message);
 }

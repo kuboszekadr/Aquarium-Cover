@@ -11,15 +11,15 @@ uint32_t Lighting::Demo::get_ts(uint32_t curr_millis)
     uint32_t delta_timestamp = curr_millis - _last_timestamp;
     delta_timestamp *= _step;
 
-    uint32_t result = EPOCH_202101010000 + delta_timestamp;
+    uint32_t result = delta_timestamp;
     return result;
 }
 
-void Lighting::Demo::run()
+void Lighting::Demo::run(uint32_t start, uint32_t end)
 {
-    uint32_t timestamp = EPOCH_202101010000;
+    uint32_t timestamp = start;
 
-    while (timestamp < EPOCH_202101020000)
+    while (timestamp < end)
     {
         ESP32Time ts;
         uint32_t curr_millis = ts.getMillis(); 

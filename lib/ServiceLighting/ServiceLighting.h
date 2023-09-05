@@ -4,10 +4,14 @@
 #include "Services/Services.h"
 
 #include "../Lighting/Program/Program.h"
+#include "Lighting.h"
+#include "Time.hpp"
 
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <ESP32Time.h>
+#include <dirent.h>
+#include <sys/time.h>
 
 namespace Services
 {
@@ -17,6 +21,7 @@ namespace Services
         void create();
 
         static void get(AsyncWebServerRequest *request);
+        static void list_programs(AsyncWebServerRequest *request);
     };
 }
 

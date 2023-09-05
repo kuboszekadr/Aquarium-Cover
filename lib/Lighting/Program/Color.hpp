@@ -20,11 +20,13 @@ namespace Lighting
 
         Color operator*(float scalar)
         {
-            red *= scalar;
-            blue *= scalar;
-            white *= scalar;
+            Color result = {0, 0, 0};
 
-            return *this;
+            result.red = red * scalar;
+            result.blue = blue * scalar;
+            result.white = white * scalar;
+
+            return result;
         };
 
         Color operator-(Color color)

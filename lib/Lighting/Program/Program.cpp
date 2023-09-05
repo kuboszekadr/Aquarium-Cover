@@ -1,6 +1,7 @@
 #include "Program.h"
 
-std::map<const char *, Lighting::Program *> Lighting::programs = std::map<const char *, Lighting::Program *>();
+uint8_t Lighting::programs_amount = 0;
+Lighting::Program *Lighting::programs[10];
 
 Lighting::Program::Program(const char *name,
                            uint32_t start_time,
@@ -8,14 +9,20 @@ Lighting::Program::Program(const char *name,
                            Color color_start,
                            Color color_end)
 {
-    _start_time = Time(start_time*100).epochs();
+    uint8_t start_hour = start_time / 100;
+    uint8_t start_minute = start_time - start_hour*100;
+    
+    _start_time = Time(start_hour, start_minute, 0).epochs();
     _end_time = Time(end_time*100).epochs();
 
     _color_start = color_start;
     _color_diff = color_end - color_start;
 
+    memset(_name, 0 ,11);
     std::memcpy(_name, name, 11);
-    programs.insert(std::make_pair(name, this));
+
+    programs[programs_amount] = this; // add sensor to the list of sensors
+    programs_amount++;
 }
 
 uint32_t Lighting::Program::getColor(uint32_t timestamp, uint32_t offset)
@@ -38,8 +45,8 @@ bool Lighting::Program::isExecutable(uint32_t timestamp, uint32_t offset)
 
 float Lighting::Program::progress(uint32_t timestamp, uint32_t offset)
 {
-    uint32_t start_time = _start_time + offset;
-    uint32_t end_time = _end_time + offset;
+    uint32_t start_time = _start_time;
+    uint32_t end_time = _end_time;
 
     float result = (timestamp - start_time);
     result = (result * 1.0) / (end_time - start_time);
@@ -49,13 +56,15 @@ float Lighting::Program::progress(uint32_t timestamp, uint32_t offset)
 
 Lighting::Program *Lighting::getProgramToRun(uint32_t timestamp, uint32_t offset)
 {
-    for (const auto &program : programs)
+    for (int i = 0; i < programs_amount; i++)
     {
-        bool is_executable = program.second->isExecutable(timestamp, offset);
+        Program *program = programs[i];
+        bool is_executable = program->isExecutable(timestamp, 0);
+        
         if (is_executable)
         {
-            return program.second;
-        }
+            return program;
+        }        
     }
     return nullptr;
 }

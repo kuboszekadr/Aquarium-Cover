@@ -26,15 +26,15 @@ void Lighting::loopCover(Cover *cover, uint32_t timestamp)
     for (uint8_t pixel = 0; pixel < cover->numPixels(); pixel++)
     {
         Program *program = getProgramToRun(timestamp, offset);
-
         uint32_t color = 0;
+        
         if (program != nullptr)
         {
             color = program->getColor(timestamp, offset);
         }
 
         cover->setPixelColor(pixel, color);
-        offset = offset + LIGHTING_PROGRAM_OFFSET;
+        offset += LIGHTING_PROGRAM_OFFSET;
     }
 }
 
@@ -83,6 +83,7 @@ void Lighting::setup()
                 color_end
                 );
 
+        Serial.println(file_name);
         file = root.openNextFile();
     }
 }

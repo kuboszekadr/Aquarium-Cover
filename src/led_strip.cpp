@@ -1,7 +1,7 @@
 #include <Adafruit_NeoPixel.h>
 #include <Arduino.h>
 
-int pin = 18;
+int pin = 19;
 uint8_t bright = 50;
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(5, pin, NEO_GRB + NEO_KHZ800);
 
@@ -20,5 +20,5 @@ void loop()
         pixels.setPixelColor(i, bright, bright, bright);
     }
     pixels.show();
-    delay(1000);
+    delay(250);
 }

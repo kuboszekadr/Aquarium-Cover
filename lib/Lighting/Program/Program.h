@@ -7,6 +7,9 @@
 #include <map>
 #include <array>
 #include <cstring>
+#include <sys/time.h>
+
+#include <Arduino.h>
 
 namespace Lighting
 {
@@ -25,18 +28,18 @@ namespace Lighting
         bool isExecutable(uint32_t timestamp, uint32_t offset = 0);
         float progress(uint32_t timestamp, uint32_t offset = 0);
 
-
-
-    private:
         uint32_t _start_time;
         uint32_t _end_time;
+    private:
 
         char _name[12];
 
         Color _color_start;
         Color _color_diff;
     };
-    extern std::map<const char *, Program *> programs;
+    extern uint8_t programs_amount;
+    extern Program *programs[10];
+
     Program *getProgramToRun(uint32_t timestamp, uint32_t offset = 0);
 }
 
