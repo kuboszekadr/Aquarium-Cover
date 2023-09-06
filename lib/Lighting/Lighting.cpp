@@ -2,13 +2,25 @@
 
 void Lighting::loop()
 {
-    ESP32Time _time = ESP32Time();
+    time_t now;
+    struct tm timestamp;
 
-    tm ts = _time.getTimeStruct();
-    Time t = Time(ts.tm_hour, ts.tm_min, ts.tm_sec);
+    time(&now);
+    localtime_r(&now, &timestamp);
 
-    uint32_t timestamp = t.epochs();
-    loop(timestamp);
+    Time t = Time(
+        timestamp.tm_hour, 
+        timestamp.tm_min, 
+        timestamp.tm_sec
+    );
+
+    uint32_t epochs = t.epochs();
+    loop(epochs);
+
+    char time_str[11];
+    strftime(time_str, 10, "%H:%M:%S", &timestamp);
+
+    Serial.println(time_str);
 }
 
 void Lighting::loop(uint32_t timestamp)
@@ -83,7 +95,6 @@ void Lighting::setup()
                 color_end
                 );
 
-        Serial.println(file_name);
         file = root.openNextFile();
     }
 }

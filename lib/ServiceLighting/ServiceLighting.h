@@ -3,7 +3,9 @@
 
 #include "Services/Services.h"
 
-#include "../Lighting/Program/Program.h"
+#include "Program/Program.h"
+#include "Cover/Cover.h"
+
 #include "Lighting.h"
 #include "Time.hpp"
 

@@ -34,8 +34,15 @@ void Services::ServiceLighting::get(AsyncWebServerRequest *request)
 
     doc["current_program"] = name;
     doc["progress"] = progress;
-    doc["color"] = color;
-    doc["timestamp"] = ts;
+
+    char time_str[11];
+    strftime(time_str, 10, "%H:%M:%S", &timestamp);
+    doc["timestamp"] = time_str;
+
+    JsonObject doc_color = doc.createNestedObject("color");
+    doc_color["blue"] = (color >> 16) & 0xFF;
+    doc_color["red"] = (color >> 8) & 0xFF;;
+    doc_color["white"] = color & 0xFF;
 
     String response;
     serializeJson(doc, response);
