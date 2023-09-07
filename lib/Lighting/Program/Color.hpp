@@ -18,6 +18,17 @@ namespace Lighting
             return color;
         }
 
+        static Color fromPixelColor(uint32_t color)
+        {
+            Color result = {0, 0, 0};
+
+            result.blue = (color >> 16) & 0xFF;
+            result.red = (color >> 8) & 0xFF;
+            result.white = color & 0xFF;    
+
+            return result;          
+        }
+
         Color operator*(float scalar)
         {
             Color result = {0, 0, 0};

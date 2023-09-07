@@ -1,6 +1,6 @@
 #include "Lighting.h"
 
-void Lighting::loop()
+cover_pixels Lighting::loop()
 {
     time_t now;
     struct tm timestamp;
@@ -15,27 +15,33 @@ void Lighting::loop()
     );
 
     uint32_t epochs = t.epochs();
-    loop(epochs);
+    return loop(epochs);
 
-    char time_str[11];
-    strftime(time_str, 10, "%H:%M:%S", &timestamp);
+    // char time_str[11];
+    // strftime(time_str, 10, "%H:%M:%S", &timestamp);
 
-    Serial.println(time_str);
+    // Serial.println(time_str);
 }
 
-void Lighting::loop(uint32_t timestamp)
+cover_pixels Lighting::loop(uint32_t timestamp)
 {
+    std::vector<std::vector<uint32_t>> pixels;
+
     for (auto &cover : covers)
     {
-        loopCover(cover, timestamp);
+        auto pixel = loopCover(cover, timestamp);
+        pixels.push_back(pixel);
     }
+
+    return pixels;
 }
 
-void Lighting::loopCover(Cover *cover, uint32_t timestamp)
+std::vector<uint32_t> Lighting::loopCover(Cover *cover, uint32_t timestamp)
 {
     uint32_t offset = LIGHTING_PROGRAM_OFFSET * (cover->order() - 1);
+    std::vector<uint32_t> pixels;
 
-    for (uint8_t pixel = 0; pixel < cover->numPixels(); pixel++)
+    for (uint32_t pixel = 0; pixel < cover->numPixels(); pixel++)
     {
         Program *program = getProgramToRun(timestamp, offset);
         uint32_t color = 0;
@@ -47,7 +53,11 @@ void Lighting::loopCover(Cover *cover, uint32_t timestamp)
 
         cover->setPixelColor(pixel, color);
         offset += LIGHTING_PROGRAM_OFFSET;
+
+        pixels.push_back(color);
     }
+
+    return pixels;
 }
 
 void Lighting::begin()

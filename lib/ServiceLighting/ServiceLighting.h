@@ -3,6 +3,7 @@
 
 #include "Services/Services.h"
 
+#include "Program/Color.hpp"
 #include "Program/Program.h"
 #include "Cover/Cover.h"
 

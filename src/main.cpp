@@ -24,7 +24,9 @@ void setupTasks();
 
 Logger logger = Logger("main");
 
-Lighting::Cover left_cover = Lighting::Cover(1, 12, 1);
+Lighting::Cover left_cover = Lighting::Cover(1, 12, 10);
+Lighting::Cover center_cover = Lighting::Cover(2, 13, 10);
+Lighting::Cover right_cover = Lighting::Cover(3, 15, 10);
 
 Services::ServiceSystemTime service_time = Services::ServiceSystemTime();
 Services::ServiceOTA service_ota = Services::ServiceOTA();
@@ -79,7 +81,7 @@ void setupTasks()
 
     Cron.create(
         "*/5 * * * * *",
-        Lighting::loop,
+        [] () {Lighting::loop();},
         false);
 }
 

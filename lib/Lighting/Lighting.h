@@ -14,17 +14,20 @@
 #include <ArduinoJson.h>
 #include <ESP32Time.h>
 #include <FS.h>
+#include <vector>
+
+typedef std::vector<std::vector<uint32_t>> cover_pixels;
 
 namespace Lighting
 {
     void setup();
     void begin();
 
-    void loop();
-    void loop(uint32_t timestamp);
+    cover_pixels loop();
+    cover_pixels loop(uint32_t timestamp);
 
     void loadProgram(const char *file_name);
-    void loopCover(Cover *cover, uint32_t timestamp);
+    std::vector<uint32_t> loopCover(Cover *cover, uint32_t timestamp);
 
     uint32_t secondToMin(uint32_t value);
 
@@ -32,5 +35,4 @@ namespace Lighting
 }
 
 void extractFileName(const char* path, char* buff);
-
 #endif

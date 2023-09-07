@@ -8,41 +8,35 @@ void Services::ServiceLighting::create()
 
 void Services::ServiceLighting::get(AsyncWebServerRequest *request)
 {
+
+    auto pixels  = Lighting::loop();
+
+    DynamicJsonDocument doc(3000);
+    JsonArray array = doc.to<JsonArray>();
+
+    for (const auto &cover : pixels)
+    {   
+        JsonArray nested_array = array.createNestedArray();
+        for (const auto &pixel : cover)
+        {
+            auto pixel_data = nested_array.createNestedObject();
+            Lighting::Color rgb = Lighting::Color::fromPixelColor(pixel);
+
+            pixel_data["red"] = rgb.red;
+            pixel_data["blue"] = rgb.blue;
+            pixel_data["white"] = rgb.white;
+        }
+    }
+
     time_t now;
     struct tm timestamp;
 
     time(&now);
     localtime_r(&now, &timestamp);
 
-    uint32_t ts = Time(timestamp.tm_hour, timestamp.tm_min, timestamp.tm_sec).epochs();
-
-    float progress = 0.0;
-    uint32_t color = 0;
-    
-    char name[16] = "null";
-    memset(name, 0, 15);
-
-    Lighting::Program *current_program = Lighting::getProgramToRun(ts);
-    if (current_program != nullptr)
-    {
-        progress = current_program->progress(ts);
-        color = current_program->getColor(ts);
-        std::memcpy(name, current_program->name(), 15);
-    }
-
-    StaticJsonDocument<512> doc;
-
-    doc["current_program"] = name;
-    doc["progress"] = progress;
-
     char time_str[11];
     strftime(time_str, 10, "%H:%M:%S", &timestamp);
     doc["timestamp"] = time_str;
-
-    JsonObject doc_color = doc.createNestedObject("color");
-    doc_color["blue"] = (color >> 16) & 0xFF;
-    doc_color["red"] = (color >> 8) & 0xFF;;
-    doc_color["white"] = color & 0xFF;
 
     String response;
     serializeJson(doc, response);
