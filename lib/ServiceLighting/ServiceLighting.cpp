@@ -8,23 +8,31 @@ void Services::ServiceLighting::create()
 
 void Services::ServiceLighting::get(AsyncWebServerRequest *request)
 {
-
     auto pixels  = Lighting::loop();
 
     DynamicJsonDocument doc(3000);
-    JsonArray array = doc.to<JsonArray>();
+    auto data = doc.to<JsonArray>();
 
     for (const auto &cover : pixels)
     {   
-        JsonArray nested_array = array.createNestedArray();
+        auto cover_data = data.createNestedObject();
+        cover_data["cover_nb"] = 1;
+
+        auto cover_pixels = cover_data.createNestedArray("pixels");
         for (const auto &pixel : cover)
         {
-            auto pixel_data = nested_array.createNestedObject();
-            Lighting::Color rgb = Lighting::Color::fromPixelColor(pixel);
+            auto pixel_data = cover_pixels.createNestedObject();
+            uint32_t color = std::get<0>(pixel);
+            
+            Lighting::Color rgb = Lighting::Color::fromPixelColor(color);
 
-            pixel_data["red"] = rgb.red;
-            pixel_data["blue"] = rgb.blue;
-            pixel_data["white"] = rgb.white;
+            auto pixel_color = pixel_data.createNestedObject("pixel");
+            pixel_color["red"] = rgb.red;
+            pixel_color["blue"] = rgb.blue;
+            pixel_color["white"] = rgb.white;
+
+            pixel_data["offset"] = std::get<1>(pixel);
+            pixel_data["program"] = std::get<2>(pixel);
         }
     }
 

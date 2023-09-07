@@ -16,7 +16,8 @@
 #include <FS.h>
 #include <vector>
 
-typedef std::vector<std::vector<uint32_t>> cover_pixels;
+typedef std::tuple<uint32_t, uint32_t, std::string> record;
+typedef std::vector<std::vector<record>> cover_pixels;
 
 namespace Lighting
 {
@@ -27,7 +28,7 @@ namespace Lighting
     cover_pixels loop(uint32_t timestamp);
 
     void loadProgram(const char *file_name);
-    std::vector<uint32_t> loopCover(Cover *cover, uint32_t timestamp);
+    std::vector<record> loopCover(Cover *cover, uint32_t timestamp);
 
     uint32_t secondToMin(uint32_t value);
 

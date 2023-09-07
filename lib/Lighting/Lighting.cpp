@@ -25,7 +25,7 @@ cover_pixels Lighting::loop()
 
 cover_pixels Lighting::loop(uint32_t timestamp)
 {
-    std::vector<std::vector<uint32_t>> pixels;
+    std::vector<std::vector<record>> pixels;
 
     for (auto &cover : covers)
     {
@@ -36,25 +36,29 @@ cover_pixels Lighting::loop(uint32_t timestamp)
     return pixels;
 }
 
-std::vector<uint32_t> Lighting::loopCover(Cover *cover, uint32_t timestamp)
+std::vector<record> Lighting::loopCover(Cover *cover, uint32_t timestamp)
 {
-    uint32_t offset = LIGHTING_PROGRAM_OFFSET * (cover->order() - 1);
-    std::vector<uint32_t> pixels;
+    uint32_t offset = LIGHTING_PROGRAM_OFFSET * (cover->order() - 1); // FIXME
+    std::vector<record> pixels;
 
     for (uint32_t pixel = 0; pixel < cover->numPixels(); pixel++)
     {
         Program *program = getProgramToRun(timestamp, offset);
         uint32_t color = 0;
+        std::string program_name("null");
         
         if (program != nullptr)
         {
             color = program->getColor(timestamp, offset);
+            program_name.clear();
+            program_name.append(program->name());
         }
+        record _record = std::make_tuple(color, offset, program_name);
 
         cover->setPixelColor(pixel, color);
         offset += LIGHTING_PROGRAM_OFFSET;
 
-        pixels.push_back(color);
+        pixels.push_back(_record);
     }
 
     return pixels;
