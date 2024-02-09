@@ -9,7 +9,11 @@
 #include <cstring>
 #include <sys/time.h>
 
-#include <Arduino.h>
+#ifdef ARDUINO
+    #include <Arduino.h>
+#else
+    // #include <ArduinoFake.h>
+#endif
 
 namespace Lighting
 {

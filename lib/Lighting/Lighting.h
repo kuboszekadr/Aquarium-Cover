@@ -6,13 +6,19 @@
 #define LIGHTING_COVERS_AMOUNT 3
 #define LIGHTING_PROGRAM_OFFSET 30L // offset in pixel program (in seconds)
 
-#include "Cover/Cover.h"
+#ifdef ARDUINO
+    #include "Cover/Cover.h"
+#else
+    #include "Cover/CoverFake.h"
+#endif
+
 #include "Program/Program.h"
 #include "Config/Config.h"
+
+#include "Timestamp/Timestamp.h"
 #include "Time.hpp"
 
 #include <ArduinoJson.h>
-#include <ESP32Time.h>
 #include <FS.h>
 #include <vector>
 
@@ -25,10 +31,10 @@ namespace Lighting
     void begin();
 
     cover_pixels loop();
-    cover_pixels loop(uint32_t timestamp);
+    cover_pixels loopOverCovers(uint32_t timestamp);
 
     void loadProgram(const char *file_name);
-    std::vector<record> loopCover(Cover *cover, uint32_t timestamp);
+    std::vector<record> loopOverCoverPixels(Cover *cover, uint32_t timestamp);
 
     uint32_t secondToMin(uint32_t value);
 

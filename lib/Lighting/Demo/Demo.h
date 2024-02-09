@@ -4,6 +4,7 @@
 #define DAY_DURATION_IN_SECONDS  8640000
 
 #include "Lighting.h"
+#include "Timestamp/Timestamp.h"
 
 namespace Lighting
 {

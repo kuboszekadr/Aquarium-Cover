@@ -15,28 +15,34 @@ cover_pixels Lighting::loop()
     );
 
     uint32_t epochs = t.epochs();
-    return loop(epochs);
-
-    // char time_str[11];
-    // strftime(time_str, 10, "%H:%M:%S", &timestamp);
-
-    // Serial.println(time_str);
+    return loopOverCovers(epochs);
 }
 
-cover_pixels Lighting::loop(uint32_t timestamp)
+/**
+ * @brief Represents the pixels of the cover.
+ */
+cover_pixels Lighting::loopOverCovers(uint32_t timestamp)
 {
     std::vector<std::vector<record>> pixels;
 
     for (auto &cover : covers)
     {
-        auto pixel = loopCover(cover, timestamp);
+        auto pixel = loopOverCoverPixels(cover, timestamp);
         pixels.push_back(pixel);
     }
 
     return pixels;
 }
 
-std::vector<record> Lighting::loopCover(Cover *cover, uint32_t timestamp)
+/**
+ * @brief Represents a vector of records.
+ * 
+ * A std::vector<record> is a container that holds a collection of records.
+ * Each record is a tuple that contains color, offset, and program name.
+ * 
+ * @return The vector of records.
+ */
+std::vector<record> Lighting::loopOverCoverPixels(Cover *cover, uint32_t timestamp)
 {
     uint32_t offset = LIGHTING_PROGRAM_OFFSET * (cover->order() - 1); // FIXME
     std::vector<record> pixels;

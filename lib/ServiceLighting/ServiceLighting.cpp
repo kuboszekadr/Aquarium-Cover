@@ -10,7 +10,7 @@ void Services::ServiceLighting::get(AsyncWebServerRequest *request)
 {
     auto pixels  = Lighting::loop();
 
-    DynamicJsonDocument doc(3000);
+    JsonDocument doc;
     auto data = doc.to<JsonArray>();
 
     for (const auto &cover : pixels)
@@ -36,14 +36,8 @@ void Services::ServiceLighting::get(AsyncWebServerRequest *request)
         }
     }
 
-    time_t now;
-    struct tm timestamp;
-
-    time(&now);
-    localtime_r(&now, &timestamp);
-
     char time_str[11];
-    strftime(time_str, 10, "%H:%M:%S", &timestamp);
+    strcpy(time_str, getTimestamp());
     doc["timestamp"] = time_str;
 
     String response;

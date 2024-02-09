@@ -24,9 +24,7 @@ void setupTasks();
 
 Logger logger = Logger("main");
 
-Lighting::Cover left_cover = Lighting::Cover(1, 12, 10);
-Lighting::Cover center_cover = Lighting::Cover(2, 13, 10);
-Lighting::Cover right_cover = Lighting::Cover(3, 15, 10);
+Lighting::Cover cover = Lighting::Cover(1, 12, 10);
 
 Services::ServiceSystemTime service_time = Services::ServiceSystemTime();
 Services::ServiceOTA service_ota = Services::ServiceOTA();
@@ -44,7 +42,7 @@ void setup()
     Logger::addStream(Loggers::logToSerial);
     Device::setup();
     
-    // Logger::addStream(Loggers::logToAPI);
+    Logger::addStream(Loggers::logToAPI);
 
     setupTasks();
     Device::setupTime();
@@ -68,9 +66,8 @@ void loop()
 
 void setupTasks()
 {
-    char task[30] = "0 0 4 * * *";
     Cron.create(
-        task,
+        "0 0 4 * * *",
         Device::setupTime,
         false);
 
@@ -83,6 +80,11 @@ void setupTasks()
         "*/5 * * * * *",
         [] () {Lighting::loop();},
         false);
+
+	Cron.create(
+		"*/30 * * * * *",
+		Device::sendHeartbeat,
+		false);        
 }
 
 void GmailNotification(const char *title, const char *message)

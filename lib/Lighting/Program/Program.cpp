@@ -21,7 +21,7 @@ Lighting::Program::Program(const char *name,
     memset(_name, 0 ,11);
     std::memcpy(_name, name, 11);
 
-    programs[programs_amount] = this; // add sensor to the list of sensors
+    programs[programs_amount] = this;
     programs_amount++;
 }
 

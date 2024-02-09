@@ -21,13 +21,12 @@ void Lighting::Demo::run(uint32_t start, uint32_t end)
 
     while (timestamp < end)
     {
-        ESP32Time ts;
-        uint32_t curr_millis = ts.getMillis(); 
+        uint32_t curr_millis = getMillis(); 
         
         timestamp = get_ts(curr_millis);
         _last_timestamp = curr_millis;
         
-        Lighting::loop(timestamp);
+        Lighting::loopOverCovers(timestamp);
         yield();
     }
 }
