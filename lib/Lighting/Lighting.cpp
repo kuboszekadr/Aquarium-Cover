@@ -14,7 +14,7 @@ cover_pixels Lighting::loop()
         timestamp.tm_sec
     );
 
-    uint32_t epochs = t.epochs();
+    uint32_t epochs = t.toMillis();
     return loopOverCovers(epochs);
 }
 
@@ -108,9 +108,21 @@ void Lighting::setup()
             data_color_end["blue"],
             data_color_end["white"]};
 
+        Time start_time = Time(
+            data["start_time"]["hour"],
+            data["start_time"]["minute"],
+            data["start_time"]["second"] | 0
+        );
+
+        Time end_time = Time(
+            data["end_time"]["hour"],
+            data["end_time"]["minute"],
+            data["end_time"]["second"] | 0
+        );
+        
         new Program(file_name,
-                data["start_time"].as<int>(),
-                data["end_time"].as<int>(),
+                start_time,
+                end_time,
                 color_start,
                 color_end
                 );

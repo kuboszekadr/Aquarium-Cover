@@ -5,20 +5,27 @@
 
 #include "Lighting.h"
 #include "Timestamp/Timestamp.h"
+#include "Time.hpp"
 
 namespace Lighting
 {
     class Demo
     {
     public:
-        Demo(uint32_t duration);
-        void run(uint32_t start, uint32_t end);
-        uint32_t get_ts(uint32_t curr_millis);
+        Demo(Time start, Time end, uint32_t duration);
 
-    private:
+        std::vector<uint32_t> getSteps();
+        uint32_t runStep(uint32_t timestamp);
+
         uint32_t _duration;
         uint32_t _step;
-        uint32_t _last_timestamp;
+
+        record pixel;
+        
+        Time _start;
+        Time _end;
+
+
     };
 }
 #endif

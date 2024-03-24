@@ -1,32 +1,28 @@
 #include "Demo.h"
 
-Lighting::Demo::Demo(uint32_t duration)
+/**
+ * @brief Constructs a Demo object with specified start time, end time, and duration.
+ * 
+ * @param start The start time of the demo.
+ * @param end The end time of the demo.
+ * @param duration The duration of the demo in minutes.
+ */
+Lighting::Demo::Demo(Time start, Time end, uint32_t duration)
 {
-    _duration = duration * 60 * 100; // in seconds
-    _step = DAY_DURATION_IN_SECONDS / _duration;
+    _duration = duration * 60 * 1000; // in miliseconds
+    _start = start;
+    _end = end;
+
+    _step = 30 * 1000;
+    // _step = (_end - _start).toMillis();
+    // _step = _step / _duration;
 }
 
-uint32_t Lighting::Demo::get_ts(uint32_t curr_millis)
-{
-    uint32_t delta_timestamp = curr_millis - _last_timestamp;
-    delta_timestamp *= _step;
 
-    uint32_t result = delta_timestamp;
+uint32_t Lighting::Demo::runStep(uint32_t timestamp)
+{
+    pixel = Lighting::loopOverCovers(timestamp)[0][1];
+
+    uint32_t result = timestamp + _step;
     return result;
-}
-
-void Lighting::Demo::run(uint32_t start, uint32_t end)
-{
-    uint32_t timestamp = start;
-
-    while (timestamp < end)
-    {
-        uint32_t curr_millis = getMillis(); 
-        
-        timestamp = get_ts(curr_millis);
-        _last_timestamp = curr_millis;
-        
-        Lighting::loopOverCovers(timestamp);
-        yield();
-    }
 }

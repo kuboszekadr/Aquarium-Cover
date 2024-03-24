@@ -4,16 +4,13 @@ uint8_t Lighting::programs_amount = 0;
 Lighting::Program *Lighting::programs[10];
 
 Lighting::Program::Program(const char *name,
-                           uint32_t start_time,
-                           uint32_t end_time,
+                           Time start_time,
+                           Time end_time,
                            Color color_start,
                            Color color_end)
 {
-    uint8_t start_hour = start_time / 100;
-    uint8_t start_minute = start_time - start_hour*100;
-    
-    _start_time = Time(start_hour, start_minute, 0).epochs();
-    _end_time = Time(end_time*100).epochs();
+    _start_time = start_time.toMillis();
+    _end_time = end_time.toMillis();
 
     _color_start = color_start;
     _color_diff = color_end - color_start;
@@ -59,7 +56,7 @@ Lighting::Program *Lighting::getProgramToRun(uint32_t timestamp, uint32_t offset
     for (int i = 0; i < programs_amount; i++)
     {
         Program *program = programs[i];
-        bool is_executable = program->isExecutable(timestamp, 0);
+        bool is_executable = program->isExecutable(timestamp, offset);
         
         if (is_executable)
         {

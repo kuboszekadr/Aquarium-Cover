@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebSocket Demo</title>
+    <script>
+        var gateway = `ws://${window.location.hostname}/s_demo`;
+        var websocket;
+
+        function initWebSocket() {
+            console.log('Trying to open a WebSocket connection...');
+            websocket = new WebSocket(gateway);
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+            websocket.onmessage = onMessage;
+        }
+        function onOpen(event) {
+            console.log('Connection opened');
+        }
+
+        function onClose(event) {
+            console.log('Connection closed');
+            setTimeout(initWebSocket, 9999);
+        }
+        function onMessage(event) {
+            console.log(event.data);
+            var data = JSON.parse(event.data);
+
+            document.getElementById('serverInfo').innerHTML = event.data;
+        }
+
+        window.addEventListener('load', onLoad);
+
+        function onLoad(event) {
+            initWebSocket();
+            initButton();
+        }
+
+        function initButton() {
+            document.getElementById('button').addEventListener('click', toggle);
+        }
+
+        function toggle() {
+            var data = {
+                'start': {'hour': 8, 'minute': 0, 'second': 0}, 
+                'end': {'hour': 22, 'minute': 0, 'second': 0}, 
+                'duration': 5
+            }
+            websocket.send(JSON.stringify(data));
+        }
+    </script>
+</head>
+
+<body>
+    <h1>WebSocket Demo</h1>
+    <textarea id="serverInfo" placeholder="N/A"></textarea>
+    <button 
+        id="button">
+        Start
+    </button>
+</body>
+
+</html>

@@ -1,20 +1,27 @@
 #include "ServiceLighting.h"
 
+Lighting::Demo *demo = nullptr;
+
 void Services::ServiceLighting::create()
 {
     server.on("/lighting", HTTP_GET, get);
-    server.on("/list_programs", HTTP_GET, list_programs);
+    server.on("/list_programs", HTTP_GET, listPrograms);
+    server.on("/testing", HTTP_GET, get);
+
+
+    demoSocket.onEvent(demoEvent);
+    configSocket.onEvent(calibrationEvent);
 }
 
 void Services::ServiceLighting::get(AsyncWebServerRequest *request)
 {
-    auto pixels  = Lighting::loop();
+    auto pixels = Lighting::loop();
 
     JsonDocument doc;
     auto data = doc.to<JsonArray>();
 
     for (const auto &cover : pixels)
-    {   
+    {
         auto cover_data = data.createNestedObject();
         cover_data["cover_nb"] = 1;
 
@@ -23,7 +30,7 @@ void Services::ServiceLighting::get(AsyncWebServerRequest *request)
         {
             auto pixel_data = cover_pixels.createNestedObject();
             uint32_t color = std::get<0>(pixel);
-            
+
             Lighting::Color rgb = Lighting::Color::fromPixelColor(color);
 
             auto pixel_color = pixel_data.createNestedObject("pixel");
@@ -49,13 +56,13 @@ void Services::ServiceLighting::get(AsyncWebServerRequest *request)
         response);
 }
 
-void Services::ServiceLighting::list_programs(AsyncWebServerRequest *request)
+void Services::ServiceLighting::listPrograms(AsyncWebServerRequest *request)
 {
     const char root_path[32] = "/config/lighting";
 
     File root = SPIFFS.open(root_path);
     File file = root.openNextFile();
-    
+
     StaticJsonDocument<256> doc;
     JsonArray result = doc.to<JsonArray>();
 
@@ -63,9 +70,9 @@ void Services::ServiceLighting::list_programs(AsyncWebServerRequest *request)
     {
         char file_name[16];
 
-        extractFileName(file.name(), file_name); 
+        extractFileName(file.name(), file_name);
         result.add(file_name);
-        file = root.openNextFile();       
+        file = root.openNextFile();
     }
 
     String response;
@@ -74,6 +81,171 @@ void Services::ServiceLighting::list_programs(AsyncWebServerRequest *request)
     request->send(
         200,
         "application/json",
-        response
-    );
+        response);
+}
+
+void Services::ServiceLighting::demoEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
+{
+    Serial.println("Event received");
+    switch (type)
+    {
+    case WS_EVT_CONNECT:
+        Serial.printf(
+            "WebSocket client #%u connected from %s\n",
+            client->id(),
+            client->remoteIP().toString().c_str());
+        break;
+    case WS_EVT_DISCONNECT:
+        Serial.printf("WebSocket client #%u disconnected\n", client->id());
+        break;
+    case WS_EVT_DATA:
+        demoRequestHandler(arg, data, len);
+        break;
+    case WS_EVT_PONG:
+    case WS_EVT_ERROR:
+        break;
+    }
+}
+
+void Services::ServiceLighting::demoRequestHandler(void *arg, uint8_t *data, size_t len)
+{
+    AwsFrameInfo *info = (AwsFrameInfo *)arg;
+    if (
+        info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT)
+    {
+        Serial.println("Data received");
+
+        JsonDocument obj;
+        DeserializationError err = deserializeJson(obj, data);
+
+        JsonObject start = obj["start"];
+        JsonObject end = obj["end"];
+
+        demo = new Lighting::Demo(
+            Time(start["hour"], start["minute"], start["seconds"]),
+            Time(end["hour"], end["minute"], end["seconds"]),
+            obj["duration"].as<uint32_t>());
+
+        xTaskCreate(
+            runDemo, // Add class scope resolution operator
+            "runDemo",
+            2000,
+            demo,
+            1,
+            NULL);
+    }
+}
+
+void Services::ServiceLighting::calibrationEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
+{
+    switch (type)
+    {
+    case WS_EVT_CONNECT:
+        Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+        break;
+    case WS_EVT_DISCONNECT:
+        Serial.println("Resuming lighting task");
+        // vTaskResume(LightingTaskHandler);
+        break;
+    case WS_EVT_DATA:
+        calibrationRequestHandler(arg, data, len);
+        break;
+    case WS_EVT_PONG:
+    case WS_EVT_ERROR:
+        break;
+    }
+}
+
+void Services::ServiceLighting::calibrationRequestHandler(void *arg, uint8_t *data, size_t len)
+{
+    AwsFrameInfo *info = (AwsFrameInfo *)arg;
+    if (
+        info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT)
+    {
+        JsonDocument obj;
+        DeserializationError err = deserializeJson(obj, data);
+
+        uint8_t red = obj["red"].as<uint8_t>();
+        uint8_t blue = obj["blue"].as<uint8_t>();
+        uint8_t white = obj["white"].as<uint8_t>();
+
+        Lighting::Color color = Lighting::Color{red, blue, white};
+
+        Serial.println(red);
+        Serial.println(blue);
+        Serial.println(white);
+
+        for (auto &cover : Lighting::covers)
+        {
+            for (uint32_t pixel = 0; pixel < cover->numPixels(); pixel++)
+            {
+                cover->setPixelColor(pixel, color.toPixelColor());
+            }
+        }
+    }
+}
+
+void runDemo(void *pvParameters)
+{
+    vTaskSuspend(LightingTaskHandler);
+
+    uint32_t refresh_rate = 1 * 1000; // in miliseconds
+    uint32_t last_client_refresh = millis();
+
+    uint32_t ts = demo->_start.toMillis();
+    uint32_t end_ts = demo->_end.toMillis();
+
+    while (ts <= end_ts)
+    {
+        if ((millis() - last_client_refresh) >= refresh_rate)
+        {
+            Time _ts = Time(ts);
+            JsonDocument doc;
+
+            JsonObject time = doc["time"].to<JsonObject>();
+
+            time["hour"] = _ts.hour;
+            time["minute"] = _ts.minute;
+            time["seconds"] = _ts.seconds;
+
+            JsonObject pixel = doc["pixel"].createNestedObject();
+            pixel["offset"] = std::get<1>(demo->pixel);
+            pixel["program"] = std::get<2>(demo->pixel);
+
+            Lighting::Color color = Lighting::Color::fromPixelColor(std::get<0>(demo->pixel));
+            pixel["red"] = color.red;
+            pixel["blue"] = color.blue;
+            pixel["white"] = color.white;
+
+            String msg;
+            serializeJson(doc, msg);
+
+            demoSocket.textAll(msg);
+            last_client_refresh = millis();
+        }
+
+        ts = demo->runStep(ts);
+        yield();
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+    demoSocket.closeAll();
+
+    delete demo;
+    demo = nullptr;
+
+    vTaskResume(LightingTaskHandler);
+    vTaskDelete(NULL);
+}
+
+void lightingTask(void *pvParameters)
+{
+    for (;;)
+    {
+        Lighting::loop();
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+    }
+}
+
+void calibrationTask(void *pvParameters)
+{
 }

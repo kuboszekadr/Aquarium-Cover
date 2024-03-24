@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Testing</title>
+    <script>
+        function validateForm(event) {
+            event.preventDefault();
+            var numberInput = document.getElementById('numberInput').value;
+            var checkBox = document.getElementById('checkBox').checked;
+            if (numberInput < 0 || numberInput > 220) {
+                alert('Please enter a number between 0 and 220.');
+                return false;
+            }
+            var requestData = {
+                numberInput: numberInput,
+                smoothTransition: checkBox
+            };
+            fetch('/testing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch((error) => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <form onsubmit="validateForm(event)">
+        <label for="numberInput">Number Input (0-220):</label><br>
+        <input type="number" id="numberInput" name="numberInput" min="0" max="220"><br>
+        <input type="checkbox" id="checkBox" name="checkBox">
+        <label for="checkBox">Smooth Transition</label><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

@@ -4,7 +4,7 @@
 // that variable is relevant in that case because under the cover there are three
 // lighting covers, unfortunatelly complicates the case a bit
 #define LIGHTING_COVERS_AMOUNT 3
-#define LIGHTING_PROGRAM_OFFSET 30L // offset in pixel program (in seconds)
+#define LIGHTING_PROGRAM_OFFSET 30000L // offset in pixel program (in seconds)
 
 #ifdef ARDUINO
     #include "Cover/Cover.h"

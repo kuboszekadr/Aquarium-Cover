@@ -21,8 +21,8 @@ namespace Lighting
     {
     public:
         Program(const char *name,
-                uint32_t start_time,
-                uint32_t end_time,
+                Time start_time,
+                Time end_time,
                 Color color_start,
                 Color color_end);
 

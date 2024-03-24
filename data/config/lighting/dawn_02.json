@@ -1,6 +1,6 @@
 {
-    "start_time": 1030,
-    "end_time": 1200,
+    "start_time": {"hour": 10, "minute": 30},
+    "end_time": {"hour": 12, "minute": 0},
     "start": {"red": 50, "blue": 100, "white": 50},
     "end": {"red": 200, "blue": 150, "white": 150}
 }
