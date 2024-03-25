@@ -63,7 +63,7 @@ void setup()
     Logger::addStream(Loggers::logToSerial);
     Device::setup();
     
-    Serial.println("v0.1.0");
+    Serial.println("v0.1.1");
 
     // Logger::addStream(Loggers::logToAPI);
 
@@ -211,7 +211,7 @@ void checkForUpdates()
     
     client.end();
 
-    bool update_firmware = bool(doc["firmware"] == 1 | 1);
+    bool update_firmware = bool(doc["firmware"] == 1 | 0);
     bool update_filesystem = bool(doc["filesystem"] == 1 | 0);
     bool updated = false;
 
