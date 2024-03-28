@@ -10,6 +10,7 @@
 #include "Services/ServiceConfig/ServiceConfig.h"
 #include "Services/ServiceOTA/ServiceOTA.h"
 #include "Services/ServiceRestart/ServiceRestart.h"
+#include "Services/ServiceSerial/ServiceSerial.h"
 
 #include "ServiceHTTPOTA.h"
 #include "ServiceWiFiConfig.h"
@@ -17,6 +18,7 @@
 #include "Logger/Logger.h"
 #include "Logger/Loggers/Serial.hpp"
 #include "Logger/Loggers/API.hpp"
+#include "Logger/Loggers/WebSerial.hpp"
 
 #include "Notification/Notification.h"
 
@@ -26,19 +28,21 @@
 
 #include <HTTPUpdate.h>
 
+#include <Adafruit_NeoPixel.h>
+
+
 void setupTasks();
 
 TaskHandle_t DemoTaskHandler;
 TaskHandle_t LightingTaskHandler;
 TaskHandle_t CalibrationTaskHandler;
 
-AsyncWebSocket demoSocket("/s_demo");
-AsyncWebSocket configSocket("/s_calibration");
 
 Logger logger = Logger("main");
 
 Lighting::Cover cover = Lighting::Cover(1, 19, 10);
 
+// REST Endpoints
 Services::ServiceSystemTime service_time = Services::ServiceSystemTime();
 Services::ServiceOTA service_ota = Services::ServiceOTA();
 Services::ServiceRestart service_restart = Services::ServiceRestart();
@@ -48,13 +52,25 @@ Services::ServiceConfig config_service = Services::ServiceConfig();
 Services::ServiceWiFi wifi_service = Services::ServiceWiFi();
 Services::ServiceHTTPOTA service_http_ota = Services::ServiceHTTPOTA();
 
+// Sockets
+AsyncWebSocket demoSocket("/s_demo");
+AsyncWebSocket configSocket("/s_calibration");
+AsyncWebSocket serial_socket("/s_serial");
+
+Services::ServiceSerial serial_service = Services::ServiceSerial();
+
 void GmailNotification(
     const char *title,
     const char *message);
 
 void checkForUpdates();
+void increaseBright();
+
 bool updateFirmware();
 bool updateFilesystem();
+
+uint8_t brightness = 0;
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(10, 19, NEO_GRB + NEO_KHZ800);
 
 void setup()
 {
@@ -63,9 +79,10 @@ void setup()
     Logger::addStream(Loggers::logToSerial);
     Device::setup();
     
-    Serial.println("v0.1.1");
+    Serial.println("v0.0.1");
 
     // Logger::addStream(Loggers::logToAPI);
+    Logger::addStream(Loggers::logToWebSerial);
 
 	esp_task_wdt_init(120, true);
 	esp_task_wdt_add(NULL);
@@ -77,57 +94,11 @@ void setup()
     Lighting::begin();
 
     Services::init();
-
-    Services::server.on(
-        "/wifi_config", 
-        HTTP_GET, 
-        [](AsyncWebServerRequest *request)
-        {
-            request->send(
-                SPIFFS, 
-                "/html/wifi.html", 
-                "text/html");
-        }
-    );
-
-    Services::server.on(
-        "/demo", 
-        HTTP_GET, 
-        [](AsyncWebServerRequest *request)
-        {
-            request->send(
-                SPIFFS, 
-                "/html/demo.html", 
-                "text/html");
-        }
-    );
-
-    Services::server.on(
-        "/tests", 
-        HTTP_GET, 
-        [](AsyncWebServerRequest *request)
-        {
-            request->send(
-                SPIFFS, 
-                "/html/tests.html", 
-                "text/html");
-        }
-    );
-
-    Services::server.on(
-        "/calibration", 
-        HTTP_GET, 
-        [](AsyncWebServerRequest *request)
-        {
-            request->send(
-                SPIFFS, 
-                "/html/calibration.html", 
-                "text/html");
-        }
-    );
+    Services::serveHTMLFolder();
     
     Services::server.addHandler(&demoSocket);
     Services::server.addHandler(&configSocket);
+    Services::server.addHandler(&serial_socket);
 
     Services::server.begin();
 
@@ -153,6 +124,7 @@ void loop()
     Cron.delay();
 
     esp_task_wdt_reset();
+
 }
 
 // void lightingTask(void *pvParameters)
@@ -185,6 +157,12 @@ void setupTasks()
 		"*/30 * * * * *",
 		Device::sendHeartbeat,
 		false);        
+
+    Cron.create(
+        "*/10 * * * * *",
+        increaseBright,
+        false
+    );
 }
 
 void GmailNotification(const char *title, const char *message)
@@ -301,4 +279,17 @@ bool updateFilesystem()
 
     return result;
 
+}
+
+void increaseBright()
+{
+    logger.logf("%d", brightness);
+    
+    for (uint8_t i = 0; i < 10; i++)
+    {
+        pixels.setPixelColor(i, brightness, brightness, brightness);
+    }
+    pixels.show();    
+
+    brightness++;
 }

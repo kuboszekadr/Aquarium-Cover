@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Online Serial Monitor</title>
+    <script>
+        var gateway = `ws://${window.location.hostname}/s_serial`;
+        var websocket;
+
+        function initWebSocket() {
+            console.log('Trying to open a WebSocket connection...');
+            websocket = new WebSocket(gateway);
+            websocket.onopen = onOpen;
+            websocket.onmessage = onMessage;
+        }
+
+        function onOpen(event) {
+            console.log('Connection opened');
+        }
+
+        function onMessage(event) {
+            var json = JSON.parse(event.data);
+            var formattedJson = JSON.stringify(json, null, 4);
+            addLogRow(json);
+        }
+
+        window.addEventListener('load', onLoad);
+
+        function onLoad(event) {
+            initWebSocket();
+        }
+
+        function addLogRow(logData) {
+            var table = document.getElementById('logTable');
+
+            if (table.rows[0].cells.length === 0) {
+                var header = table.createTHead();
+                var headerRow = header.insertRow(0);
+                for (var key in logData) {
+                    var th = document.createElement('th');
+                    var text = document.createTextNode(key);
+                    th.appendChild(text);
+                    headerRow.appendChild(th);
+                }
+            }
+
+            var row = table.insertRow(1);  // Insert new row at the top of the table
+
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+
+            cell1.innerHTML = logData.module_name;
+            cell2.innerHTML = logData.log_level;
+            cell3.innerHTML = logData.msg;
+            cell4.innerHTML = logData.timestamp;
+        }
+
+    </script>
+</head>
+
+<body>
+    <table id="logTable">
+        <tr>
+            <th>Module Name</th>
+            <th>Log Level</th>
+            <th>Message</th>
+            <th>Timestamp</th>
+        </tr>
+    </table>
+</body>
+
+</html>
