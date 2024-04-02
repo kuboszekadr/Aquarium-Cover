@@ -78,7 +78,8 @@ void setup()
 
     Logger::addStream(Loggers::logToSerial);
     Device::setup();
-    
+    Device::device->setupAPI(false);
+
     Serial.println("v0.0.1");
 
     // Logger::addStream(Loggers::logToAPI);
