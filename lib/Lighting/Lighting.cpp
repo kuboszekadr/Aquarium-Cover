@@ -62,6 +62,7 @@ std::vector<record> Lighting::loopOverCoverPixels(Cover *cover, uint32_t timesta
         record _record = std::make_tuple(color, offset, program_name);
 
         cover->setPixelColor(pixel, color);
+        cover->show();
         offset += LIGHTING_PROGRAM_OFFSET;
 
         pixels.push_back(_record);

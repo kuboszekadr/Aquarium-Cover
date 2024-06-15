@@ -3,7 +3,7 @@
 
 int pin = 19;
 uint8_t bright = 50;
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(5, pin, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(7, pin, NEO_GRB + NEO_KHZ800);
 
 void setup()
 {
@@ -13,12 +13,27 @@ void setup()
 
 void loop()
 {
-    bright += 1;
-    Serial.println(bright);
-    for (uint8_t i = 0; i < 5; i++)
+    Serial.println("1");
+    for (uint8_t i = 0; i < 7; i++)
     {
-        pixels.setPixelColor(i, bright, bright, bright);
+        pixels.setPixelColor(i, 0, 0, 200);
     }
     pixels.show();
-    delay(250);
+    delay(10000);
+
+    Serial.println("2");
+    for (uint8_t i = 0; i < 7; i++)
+    {
+        pixels.setPixelColor(i, 200, 0, 0);
+    }
+    pixels.show();
+    delay(10000);
+
+    Serial.println("3");
+    for (uint8_t i = 0; i < 7; i++)
+    {
+        pixels.setPixelColor(i, 0, 200, 0);
+    }
+    pixels.show();
+    delay(10000);
 }

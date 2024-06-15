@@ -108,15 +108,15 @@ void setup()
     Notification::addStream(GmailNotification);
     Notification::push("Cover-init", "Device started");
 
-    xTaskCreate(
-        lightingTask,
-        "LightingMain",
-        10000,
-        NULL,
-        1,
-        &LightingTaskHandler);
+    // xTaskCreate(
+    //     lightingTask,
+    //     "LightingMain",
+    //     10000,
+    //     NULL,
+    //     1,
+    //     &LightingTaskHandler);
 
-    checkForUpdates();
+    // checkForUpdates();
 }
 
 void loop()
@@ -159,11 +159,11 @@ void setupTasks()
 		Device::sendHeartbeat,
 		false);        
 
-    Cron.create(
-        "*/10 * * * * *",
-        increaseBright,
-        false
-    );
+    // Cron.create(
+    //     "*/1 * * * * *",
+    //     increaseBright,
+    //     false
+    // );
 }
 
 void GmailNotification(const char *title, const char *message)
@@ -282,15 +282,15 @@ bool updateFilesystem()
 
 }
 
-void increaseBright()
-{
-    logger.logf("%d", brightness);
+// void increaseBright()
+// {
+//     logger.logf("%d", brightness);
     
-    for (uint8_t i = 0; i < 10; i++)
-    {
-        pixels.setPixelColor(i, brightness, brightness, brightness);
-    }
-    pixels.show();    
+//     for (uint8_t i = 0; i < 10; i++)
+//     {
+//         pixels.setPixelColor(i, brightness, brightness, brightness);
+//     }
+//     pixels.show();    
 
-    brightness++;
-}
+//     brightness++;
+// }
