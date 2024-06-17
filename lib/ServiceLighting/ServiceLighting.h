@@ -16,6 +16,7 @@
 #include "Lighting.h"
 #include "Time.hpp"
 
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <dirent.h>
@@ -44,7 +45,6 @@ namespace Services
 }
 
 void runDemo(void *pvParameters);
-void lightingTask(void *pvParameters);
 
 void calibrationTaskStart(void *pvParameters);
 void calibrationTaskStop(void *pvParameters);

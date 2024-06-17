@@ -9,10 +9,9 @@ cover_pixels Lighting::loop()
     localtime_r(&now, &timestamp);
 
     Time t = Time(
-        timestamp.tm_hour, 
-        timestamp.tm_min, 
-        timestamp.tm_sec
-    );
+        timestamp.tm_hour,
+        timestamp.tm_min,
+        timestamp.tm_sec);
 
     uint32_t epochs = t.toMillis();
     return loopOverCovers(epochs);
@@ -36,10 +35,10 @@ cover_pixels Lighting::loopOverCovers(uint32_t timestamp)
 
 /**
  * @brief Represents a vector of records.
- * 
+ *
  * A std::vector<record> is a container that holds a collection of records.
  * Each record is a tuple that contains color, offset, and program name.
- * 
+ *
  * @return The vector of records.
  */
 std::vector<record> Lighting::loopOverCoverPixels(Cover *cover, uint32_t timestamp)
@@ -52,7 +51,7 @@ std::vector<record> Lighting::loopOverCoverPixels(Cover *cover, uint32_t timesta
         Program *program = getProgramToRun(timestamp, offset);
         uint32_t color = 0;
         std::string program_name("null");
-        
+
         if (program != nullptr)
         {
             color = program->getColor(timestamp, offset);
@@ -92,7 +91,7 @@ void Lighting::setup()
 
         extractFileName(file.name(), file_name);
 
-        Config config = Config(file_name, root_path+1);
+        Config config = Config(file_name, root_path + 1);
         config.load();
 
         auto data = config.data;
@@ -112,27 +111,24 @@ void Lighting::setup()
         Time start_time = Time(
             data["start_time"]["hour"],
             data["start_time"]["minute"],
-            data["start_time"]["second"] | 0
-        );
+            data["start_time"]["second"] | 0);
 
         Time end_time = Time(
             data["end_time"]["hour"],
             data["end_time"]["minute"],
-            data["end_time"]["second"] | 0
-        );
-        
+            data["end_time"]["second"] | 0);
+
         new Program(file_name,
-                start_time,
-                end_time,
-                color_start,
-                color_end
-                );
+                    start_time,
+                    end_time,
+                    color_start,
+                    color_end);
 
         file = root.openNextFile();
     }
 }
 
-void extractFileName(const char* path, char* buff)
+void extractFileName(const char *path, char *buff)
 {
     char _path[33];
     memcpy(_path, path, 32);

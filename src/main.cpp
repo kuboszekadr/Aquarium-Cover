@@ -66,11 +66,14 @@ void GmailNotification(
 void checkForUpdates();
 void increaseBright();
 
+void lightingTask(void *pvParameters);
+
 bool updateFirmware();
 bool updateFilesystem();
 
 uint8_t brightness = 0;
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(10, 19, NEO_GRB + NEO_KHZ800);
+
 
 void setup()
 {
@@ -108,13 +111,41 @@ void setup()
     Notification::addStream(GmailNotification);
     Notification::push("Cover-init", "Device started");
 
-    // xTaskCreate(
-    //     lightingTask,
-    //     "LightingMain",
-    //     10000,
-    //     NULL,
-    //     1,
-    //     &LightingTaskHandler);
+    xTaskCreate(
+        lightingTask,
+        "LightingMain",
+        10000,
+        NULL,
+        1,
+        &LightingTaskHandler);
+
+    xTaskCreate(
+        [] (void* pvParameters) {
+            for (;;) {
+                Device::sendHeartbeat();
+                vTaskDelay(30000 / portTICK_PERIOD_MS); // Delay for 30 seconds
+            }
+        },
+        "HeartbeatTask", // Name of task
+        10000,           // Stack size of task
+        NULL,            // Parameter of the task
+        1,               // Priority of the task
+        NULL             // Task handle to keep track of created task
+    );
+
+    xTaskCreate(
+        [] (void* pvParameters) {
+            for (;;) {
+                WiFiManager::manageConnection();
+                vTaskDelay(60000 / portTICK_PERIOD_MS); // Delay for 60 seconds
+            }
+        },
+        "WiFiConnection", // Name of task
+        10000,           // Stack size of task
+        NULL,            // Parameter of the task
+        1,               // Priority of the task
+        NULL             // Task handle to keep track of created task
+    );
 
     // checkForUpdates();
 }
@@ -128,14 +159,14 @@ void loop()
 
 }
 
-// void lightingTask(void *pvParameters)
-// {
-//     for (;;)
-//     {
-//         Lighting::loop();
-//         vTaskDelay(500 / portTICK_PERIOD_MS);
-//     }
-// }
+void lightingTask(void *pvParameters)
+{
+    for (;;)
+    {
+        Lighting::loop();
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+}
 
 void setupTasks()
 {
@@ -148,22 +179,7 @@ void setupTasks()
         "* */1 * * * *",
         WiFiManager::manageConnection,
         false);
-
-    // Cron.create(
-    //     "*/5 * * * * *",
-    //     [] () {Lighting::loop();},
-    //     false);
-
-	Cron.create(
-		"*/30 * * * * *",
-		Device::sendHeartbeat,
-		false);        
-
-    // Cron.create(
-    //     "*/1 * * * * *",
-    //     increaseBright,
-    //     false
-    // );
+       
 }
 
 void GmailNotification(const char *title, const char *message)
@@ -281,16 +297,3 @@ bool updateFilesystem()
     return result;
 
 }
-
-// void increaseBright()
-// {
-//     logger.logf("%d", brightness);
-    
-//     for (uint8_t i = 0; i < 10; i++)
-//     {
-//         pixels.setPixelColor(i, brightness, brightness, brightness);
-//     }
-//     pixels.show();    
-
-//     brightness++;
-// }

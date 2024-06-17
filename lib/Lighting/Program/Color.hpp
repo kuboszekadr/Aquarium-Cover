@@ -8,9 +8,9 @@ namespace Lighting
 
     struct Color
     {
-        uint8_t red;
-        uint8_t blue;
-        uint8_t white;
+        int16_t red;
+        int16_t blue;
+        int16_t white;
 
         uint32_t toPixelColor()
         {

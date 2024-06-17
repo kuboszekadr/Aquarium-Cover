@@ -26,7 +26,12 @@
             console.log(event.data);
             var data = JSON.parse(event.data);
 
-            document.getElementById('serverInfo').innerHTML = event.data;
+            document.getElementById('red').textContent = 'Red: ' + String(data.pixel[0].red).padStart(3, '0');
+            document.getElementById('white').textContent = 'White: ' + String(data.pixel[0].white).padStart(3, '0');
+            document.getElementById('blue').textContent = 'Blue: ' + String(data.pixel[0].blue).padStart(3, '0');
+
+            document.getElementById('demoTime').textContent = String(data.time.hour).padStart(2, '0') + ":" + String(data.time.minute).padStart(2, '0');
+            document.getElementById('demoProgram').textContent = data.pixel[0].program;
         }
 
         window.addEventListener('load', onLoad);
@@ -37,14 +42,23 @@
         }
 
         function initButton() {
-            document.getElementById('button').addEventListener('click', toggle);
+            document.getElementById('submit').addEventListener('click', toggle);
         }
 
         function toggle() {
+            var startTime = document.getElementById('startTime').value.split(':');
+            var endTime = document.getElementById('endTime').value.split(':');
+
             var data = {
-                'start': {'hour': 8, 'minute': 0, 'second': 0}, 
-                'end': {'hour': 22, 'minute': 0, 'second': 0}, 
-                'duration': 5
+                'start': { 
+                    'hour': parseInt(startTime[0]), 
+                    'minute': parseInt(startTime[1]), 
+                    'seconds': 0},
+                'end': { 
+                    'hour': parseInt(endTime[0]), 
+                    'minute': parseInt(endTime[1]),
+                    'seconds': 0},
+                'duration': 0
             }
             websocket.send(JSON.stringify(data));
         }
@@ -53,11 +67,27 @@
 
 <body>
     <h1>WebSocket Demo</h1>
-    <textarea id="serverInfo" placeholder="N/A"></textarea>
-    <button 
-        id="button">
-        Start
-    </button>
-</body>
+    <form id="DemoForm">
+        <h2>Start Time</h2>
+        <label for="startTime">Time:</label><br>
+        <input type="time" id="startTime" name="startTime"><br>
 
+        <h2>End Time</h2>
+        <label for="endTime">Time:</label><br>
+        <input type="time" id="endTime" name="endTime"><br>
+
+        <input type="submit" value="Submit" id="submit">
+    </form>
+
+    <div id="pixelColors">
+        <h2>Pixel Colors</h2>
+        <span id="demoTime">HH:MM</span><br>
+        <span id="demoProgram">N/A</span><br>
+
+        <span id="red">Red: 0</span><br>
+        <span id="white">White: 0</span><br>
+        <span id="blue">Blue: 0</span><br>
+    </div>
+
+</body>
 </html>

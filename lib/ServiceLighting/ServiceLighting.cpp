@@ -8,7 +8,6 @@ void Services::ServiceLighting::create()
     server.on("/list_programs", HTTP_GET, listPrograms);
     server.on("/testing", HTTP_GET, get);
 
-
     demoSocket.onEvent(demoEvent);
     configSocket.onEvent(calibrationEvent);
 }
@@ -107,6 +106,11 @@ void Services::ServiceLighting::demoRequestHandler(void *arg, uint8_t *data, siz
     if (
         info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT)
     {
+        if (eTaskGetState(LightingTaskHandler) == eSuspended)
+        {
+            demoSocket.textAll("Demo already running");
+            return;
+        }
 
         JsonDocument obj;
         DeserializationError err = deserializeJson(obj, data);
@@ -115,11 +119,16 @@ void Services::ServiceLighting::demoRequestHandler(void *arg, uint8_t *data, siz
         JsonObject end = obj["end"];
 
         demo = new Lighting::Demo(
-            Time(start["hour"], start["minute"], start["seconds"]),
-            Time(end["hour"], end["minute"], end["seconds"]),
+            Time(
+                start["hour"],
+                start["minute"],
+                start["seconds"]),
+            Time(
+                end["hour"],
+                end["minute"],
+                end["seconds"]),
             obj["duration"].as<uint32_t>());
 
-        Serial.println("Starting demo...");
         xTaskCreate(
             runDemo, // Add class scope resolution operator
             "runDemo",
@@ -136,10 +145,11 @@ void Services::ServiceLighting::calibrationEvent(AsyncWebSocket *server, AsyncWe
     {
     case WS_EVT_CONNECT:
         Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+        vTaskSuspend(LightingTaskHandler);
         break;
     case WS_EVT_DISCONNECT:
         Serial.println("Resuming lighting task");
-        // vTaskResume(LightingTaskHandler);
+        vTaskResume(LightingTaskHandler);
         break;
     case WS_EVT_DATA:
         calibrationRequestHandler(arg, data, len);
@@ -154,11 +164,7 @@ void Services::ServiceLighting::calibrationRequestHandler(void *arg, uint8_t *da
 {
     AwsFrameInfo *info = (AwsFrameInfo *)arg;
     if (
-        info->final 
-        && info->index == 0 
-        && info->len == len 
-        && info->opcode == WS_TEXT
-        )
+        info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT)
     {
         JsonDocument obj;
         DeserializationError err = deserializeJson(obj, data);
@@ -183,7 +189,8 @@ void Services::ServiceLighting::calibrationRequestHandler(void *arg, uint8_t *da
 
 void runDemo(void *pvParameters)
 {
-    // vTaskSuspend(LightingTaskHandler);
+    vTaskSuspend(LightingTaskHandler);
+    Lighting::Demo *demo = (Lighting::Demo *)pvParameters;
 
     uint32_t refresh_rate = 1 * 1000; // in miliseconds
     uint32_t last_client_refresh = millis();
@@ -196,7 +203,6 @@ void runDemo(void *pvParameters)
         if ((millis() - last_client_refresh) >= refresh_rate)
         {
             Time _ts = Time(ts);
-            Serial.println("Sending data to clients");
 
             JsonDocument doc;
 
@@ -233,17 +239,4 @@ void runDemo(void *pvParameters)
 
     vTaskResume(LightingTaskHandler);
     vTaskDelete(NULL);
-}
-
-void lightingTask(void *pvParameters)
-{
-    for (;;)
-    {
-        Lighting::loop();
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-    }
-}
-
-void calibrationTask(void *pvParameters)
-{
 }

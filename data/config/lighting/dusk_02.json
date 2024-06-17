@@ -1,6 +1,20 @@
 {
-    "start_time": {"hour": 20, "minute": 0},
-    "end_time": {"hour": 21, "minute": 30},
-    "start": {"red": 0, "blue": 30, "white": 0},
-    "end": {"red": 0, "blue": 0, "white": 0}
+    "start_time": {
+        "hour": 20,
+        "minute": 0
+    },
+    "end_time": {
+        "hour": 21,
+        "minute": 30
+    },
+    "start": {
+        "red": 0,
+        "blue": 30,
+        "white": 0
+    },
+    "end": {
+        "red": 0,
+        "blue": 0,
+        "white": 0
+    }
 }
