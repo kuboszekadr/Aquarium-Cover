@@ -58,9 +58,28 @@
         }
 
         function sendColorValue() {
-            var red = document.getElementById("redSlider").value;
-            var white = document.getElementById("whiteSlider").value;;
-            var blue = document.getElementById("blueSlider").value;;
+            var redSlider = document.getElementById("redSlider");
+            var whiteSlider = document.getElementById("whiteSlider");
+            var blueSlider = document.getElementById("blueSlider");
+
+            var red = redSlider.value;
+            var white = whiteSlider.value;;
+            var blue = blueSlider.value;;
+
+            document.getElementById("redValue").innerText = red;
+            document.getElementById("whiteValue").innerText = white;
+            document.getElementById("blueValue").innerText = blue;
+
+            // Calculate percentages
+            var redPercentage = ((red - redSlider.min) / (redSlider.max - redSlider.min)) * 100;
+            var whitePercentage = ((white - whiteSlider.min) / (whiteSlider.max - whiteSlider.min)) * 100;
+            var bluePercentage = ((blue - blueSlider.min) / (blueSlider.max - blueSlider.min)) * 100;
+
+            // Update color span values
+            document.getElementById("redValue").innerText = redPercentage.toFixed(0) + '%';
+            document.getElementById("whiteValue").innerText = whitePercentage.toFixed(0) + '%';
+            document.getElementById("blueValue").innerText = bluePercentage.toFixed(0) + '%';
+
 
             var data = JSON.stringify(
                 {
@@ -83,6 +102,12 @@
         body {
             background-color: #000;
             color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* height: 100vh; */
+            margin: 0;
         }
 
         .slider {
@@ -94,20 +119,34 @@
 
 <body>
     <h1>Color Calibration</h1>
-    <h2>Red</h2>
-    <input type="range" min="0" max="200" value="0" class="slider" id="redSlider" onchange="sendColorValue()"
-        style="background-color: rgb(226, 71, 71);">
-    <span id="redValue">0</span>
 
-    <h2>White</h2>
-    <input type="range" min="0" max="200" value="0" class="slider" id="whiteSlider" onchange="sendColorValue()"
-        style="background-color: rgb(248, 248, 248);">
-    <span id="whiteValue">0</span>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <div><h3>Red</h3></div>
+            <div style="display: flex; justify-content: center; align-items: center;"><span id="redValue">0</span></div>
+        </div>
+        <input type="range" min="20" max="200" value="0" class="slider" id="redSlider" onchange="sendColorValue()"
+            style="background-color: rgb(226, 71, 71);">
+        
+    </div>
 
-    <h2>Blue</h2>
-    <input type="range" min="0" max="200" value="0" class="slider" id="blueSlider" onchange="sendColorValue()"
-        style="background-color: rgb(74, 74, 255);">
-    <span id="blueValue">0</span>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <div><h3>White</h3></div>
+            <div style="display: flex; justify-content: center; align-items: center;"><span id="whiteValue">0</span></div>
+        </div>
+        <input type="range" min="20" max="200" value="0" class="slider" id="whiteSlider" onchange="sendColorValue()"
+            style="background-color: rgb(248, 248, 248);">
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <div><h3>Blue</h3></div>
+            <div style="display: flex; justify-content: center; align-items: center;"><span id="blueValue">0</span></div>
+        </div>
+        <input type="range" min="20" max="200" value="0" class="slider" id="blueSlider" onchange="sendColorValue()"
+            style="background-color: rgb(74, 74, 255);">
+    </div>
 </body>
 
 </html>
