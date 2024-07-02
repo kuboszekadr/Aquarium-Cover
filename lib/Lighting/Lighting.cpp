@@ -1,5 +1,7 @@
 #include "Lighting.h"
 
+uint8_t Lighting::starts_from = -1;
+
 cover_pixels Lighting::loop()
 {
     time_t now;
@@ -26,10 +28,9 @@ cover_pixels Lighting::loopOverCovers(uint32_t timestamp)
 
     for (auto &cover : covers)
     {
-        auto pixel = loopOverCoverPixels(cover, timestamp);
-        pixels.push_back(pixel);
+            auto pixel = loopOverCoverPixels(cover, timestamp);
+            pixels.push_back(pixel);
     }
-
     return pixels;
 }
 
@@ -46,7 +47,7 @@ std::vector<record> Lighting::loopOverCoverPixels(Cover *cover, uint32_t timesta
     uint32_t offset = LIGHTING_PROGRAM_OFFSET * (cover->order() - 1); // FIXME
     std::vector<record> pixels;
 
-    for (uint32_t pixel = 0; pixel < cover->numPixels(); pixel++)
+    for (uint32_t pixel = starts_from; pixel < cover->numPixels(); pixel++)
     {
         Program *program = getProgramToRun(timestamp, offset);
         uint32_t color = 0;

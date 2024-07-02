@@ -39,6 +39,7 @@ namespace Lighting
     uint32_t secondToMin(uint32_t value);
 
     void runDemo(uint32_t duration);
+    extern uint8_t starts_from;
 }
 
 void extractFileName(const char* path, char* buff);

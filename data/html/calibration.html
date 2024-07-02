@@ -22,11 +22,6 @@
             console.log('Connection opened');
         }
 
-        function onClose(event) {
-            console.log('Connection closed');
-            setTimeout(initWebSocket, 9999);
-        }
-
         window.addEventListener('load', onLoad);
         function onLoad(event) {
             initWebSocket();
@@ -35,8 +30,8 @@
                     const redValue = redSlider.value;
                     console.log("Red value:", redValue);
 
-                    // redValueSpan.textContent = redValue;
-                    // sendColorValue();
+                    redValueSpan.textContent = redValue;
+                    sendColorValue();
                 });
 
                 whiteSlider.addEventListener("input", function () {
@@ -56,6 +51,11 @@
                 });
             });
         }
+
+        window.onbeforeunload = function () {
+            websocket.onclose = function () { }; // disable onclose handler first
+            websocket.close()
+        };
 
         function sendColorValue() {
             var redSlider = document.getElementById("redSlider");
@@ -122,18 +122,23 @@
 
     <div style="display: flex; flex-direction: column; align-items: center;">
         <div style="display: flex; justify-content: space-between; width: 100%;">
-            <div><h3>Red</h3></div>
+            <div>
+                <h3>Red</h3>
+            </div>
             <div style="display: flex; justify-content: center; align-items: center;"><span id="redValue">0</span></div>
         </div>
         <input type="range" min="20" max="200" value="0" class="slider" id="redSlider" onchange="sendColorValue()"
             style="background-color: rgb(226, 71, 71);">
-        
+
     </div>
 
     <div style="display: flex; flex-direction: column; align-items: center;">
         <div style="display: flex; justify-content: space-between; width: 100%;">
-            <div><h3>White</h3></div>
-            <div style="display: flex; justify-content: center; align-items: center;"><span id="whiteValue">0</span></div>
+            <div>
+                <h3>White</h3>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center;"><span id="whiteValue">0</span>
+            </div>
         </div>
         <input type="range" min="20" max="200" value="0" class="slider" id="whiteSlider" onchange="sendColorValue()"
             style="background-color: rgb(248, 248, 248);">
@@ -141,8 +146,11 @@
 
     <div style="display: flex; flex-direction: column; align-items: center;">
         <div style="display: flex; justify-content: space-between; width: 100%;">
-            <div><h3>Blue</h3></div>
-            <div style="display: flex; justify-content: center; align-items: center;"><span id="blueValue">0</span></div>
+            <div>
+                <h3>Blue</h3>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center;"><span id="blueValue">0</span>
+            </div>
         </div>
         <input type="range" min="20" max="200" value="0" class="slider" id="blueSlider" onchange="sendColorValue()"
             style="background-color: rgb(74, 74, 255);">

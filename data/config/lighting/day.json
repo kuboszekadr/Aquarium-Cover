@@ -9,12 +9,12 @@
     },
     "start": {
         "red": 200,
-        "blue": 150,
-        "white": 150
+        "blue": 200,
+        "white": 200
     },
     "end": {
         "red": 200,
-        "blue": 150,
-        "white": 150
+        "blue": 200,
+        "white": 200
     }
 }

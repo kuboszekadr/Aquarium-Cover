@@ -148,6 +148,7 @@ void Services::ServiceLighting::calibrationEvent(AsyncWebSocket *server, AsyncWe
         vTaskSuspend(LightingTaskHandler);
         break;
     case WS_EVT_DISCONNECT:
+        Serial.println("Client disconected");
         Serial.println("Resuming lighting task");
         vTaskResume(LightingTaskHandler);
         break;
