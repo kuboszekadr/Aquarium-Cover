@@ -14,8 +14,6 @@ Lighting::Demo::Demo(Time start, Time end, uint32_t duration)
     _end = end;
 
     _step = 30 * 1000;
-    // _step = (_end - _start).toMillis();
-    // _step = _step / _duration;
 }
 
 

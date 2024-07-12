@@ -1,6 +1,6 @@
 #include "Lighting.h"
 
-uint8_t Lighting::starts_from = -1;
+uint8_t Lighting::pixel_offset = 0;
 
 cover_pixels Lighting::loop()
 {
@@ -44,10 +44,10 @@ cover_pixels Lighting::loopOverCovers(uint32_t timestamp)
  */
 std::vector<record> Lighting::loopOverCoverPixels(Cover *cover, uint32_t timestamp)
 {
-    uint32_t offset = LIGHTING_PROGRAM_OFFSET * (cover->order() - 1); // FIXME
+    uint32_t offset = LIGHTING_PROGRAM_OFFSET * (cover->order() + pixel_offset - 1); // FIXME
     std::vector<record> pixels;
 
-    for (uint32_t pixel = starts_from; pixel < cover->numPixels(); pixel++)
+    for (uint32_t pixel = 0; pixel < cover->numPixels(); pixel++)
     {
         Program *program = getProgramToRun(timestamp, offset);
         uint32_t color = 0;

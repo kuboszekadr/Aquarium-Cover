@@ -38,7 +38,7 @@ TaskHandle_t CalibrationTaskHandler;
 
 Logger logger = Logger("main");
 
-Lighting::Cover cover = Lighting::Cover(1, 19, 20);
+Lighting::Cover cover = Lighting::Cover(1, 19, 7);
 
 // REST Endpoints
 Services::ServiceSystemTime service_time = Services::ServiceSystemTime();
@@ -69,8 +69,6 @@ void lightingTask(void *pvParameters);
 // bool updateFirmware();
 // bool updateFilesystem();
 
-uint8_t brightness = 0;
-
 void setup()
 {
     Serial.begin(115200);
@@ -91,7 +89,7 @@ void setup()
 
     auto lighthing_config = Config("device");
     lighthing_config.load();
-    Lighting::starts_from = lighthing_config.data["starts_from"];
+    Lighting::pixel_offset = lighthing_config.data["pixel_offset"] | 0;
 
     Lighting::setup();
     Lighting::begin();
@@ -161,16 +159,6 @@ void loop()
     Cron.delay();
 
     esp_task_wdt_reset();
-
-    // auto lighthing_config = Config("covers");
-    // lighthing_config.load();
-    // JsonDocument config2 = lighthing_config.data;
-    // Lighting::start_from = config2["position"];
-    
-    // JsonArray sub_covers = config2["covers"];
-    // Serial.println(sub_covers.size());  
-    // serializeJsonPretty(lighthing_config.data, Serial);  
-    // Serial.println("-------");
 }
 
 void lightingTask(void *pvParameters)
@@ -178,7 +166,7 @@ void lightingTask(void *pvParameters)
     for (;;)
     {
         (void)Lighting::loop();
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 
@@ -187,11 +175,6 @@ void setupTasks()
     Cron.create(
         "0 0 4 * * *",
         Device::setupTime,
-        false);
-
-    Cron.create(
-        "* */1 * * * *",
-        WiFiManager::manageConnection,
         false);
 }
 

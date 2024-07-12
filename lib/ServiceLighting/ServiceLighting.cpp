@@ -227,10 +227,8 @@ void runDemo(void *pvParameters)
 
             demoSocket.textAll(msg);
             last_client_refresh = millis();
+            ts = demo->runStep(ts);
         }
-
-        ts = demo->runStep(ts);
-        yield();
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
     demoSocket.closeAll();
