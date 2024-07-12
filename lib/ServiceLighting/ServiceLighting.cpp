@@ -193,7 +193,7 @@ void runDemo(void *pvParameters)
     vTaskSuspend(LightingTaskHandler);
     Lighting::Demo *demo = (Lighting::Demo *)pvParameters;
 
-    uint32_t refresh_rate = 1 * 1000; // in miliseconds
+    uint32_t refresh_rate = 1 * 500; // in miliseconds
     uint32_t last_client_refresh = millis();
 
     uint32_t ts = demo->_start.toMillis();

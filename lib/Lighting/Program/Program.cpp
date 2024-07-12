@@ -26,7 +26,7 @@ uint32_t Lighting::Program::getColor(uint32_t timestamp, uint32_t offset)
 {
     float _progress = progress(timestamp, offset);
     Color color = _color_start + _color_diff * _progress;
-
+    
     uint32_t result = color.toPixelColor();
     return result;
 }
@@ -42,8 +42,9 @@ bool Lighting::Program::isExecutable(uint32_t timestamp, uint32_t offset)
 
 float Lighting::Program::progress(uint32_t timestamp, uint32_t offset)
 {
-    uint32_t start_time = _start_time;
-    uint32_t end_time = _end_time;
+    // FIXME: modify timestamp instaed of start/end time
+    uint32_t start_time = _start_time + offset;
+    uint32_t end_time = _end_time + offset;
 
     float result = (timestamp - start_time);
     result = (result * 1.0) / (end_time - start_time);
