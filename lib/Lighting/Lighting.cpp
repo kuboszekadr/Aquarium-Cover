@@ -58,6 +58,7 @@ std::vector<record> Lighting::loopOverCoverPixels(Cover *cover, uint32_t timesta
             color = program->getColor(timestamp, offset);
             program_name.clear();
             program_name.append(program->name());
+
         }
         record _record = std::make_tuple(color, offset, program_name);
 

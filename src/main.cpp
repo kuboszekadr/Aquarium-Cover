@@ -61,13 +61,8 @@ void GmailNotification(
     const char *title,
     const char *message);
 
-// void checkForUpdates();
-// void increaseBright();
 
 void lightingTask(void *pvParameters);
-
-// bool updateFirmware();
-// bool updateFilesystem();
 
 void setup()
 {
@@ -75,8 +70,6 @@ void setup()
 
     Logger::addStream(Loggers::logToSerial);
     Device::setup();
-
-    Serial.println("v1.0.0");
 
     Logger::addStream(Loggers::logToAPI);
     Logger::addStream(Loggers::logToWebSerial);
@@ -183,111 +176,3 @@ void GmailNotification(const char *title, const char *message)
     Device::device->postNotification(title, message);
 }
 
-// void checkForUpdates()
-// {
-//     HTTPClient client;
-//     client.begin("http://74.234.8.4:5000/updates");
-//     client.setConnectTimeout(1000);
-
-//     int response_code = client.GET();
-//     if (response_code != 200)
-//     {
-//         logger.log("Could not check...");
-//     }
-
-//     JsonDocument doc;
-
-//     deserializeJson(doc, client.getString());
-//     serializeJsonPretty(doc, Serial);
-
-//     client.end();
-
-//     bool update_firmware = bool(doc["firmware"] == 1 | 0);
-//     bool update_filesystem = bool(doc["filesystem"] == 1 | 0);
-//     bool updated = false;
-
-//     httpUpdate.rebootOnUpdate(false);
-//     if (update_firmware)
-//     {
-//         delay(1000);
-//         updated = updateFirmware();
-//     }
-
-//     if (update_filesystem)
-//     {
-//         delay(1000);
-//         updated = (updated | updateFilesystem());
-//     }
-
-//     if (updated)
-//     {
-//         Serial.println("Filesystem or firmware has been updated. Restarting.");
-//         ESP.restart();
-//     }
-// }
-
-// bool updateFirmware()
-// {
-//     Serial.println("Updating firmware...");
-
-//     WiFiClient client;
-
-//     const char *update_url = "http://74.234.8.4:5000/download_latest";
-//     t_httpUpdate_return ret = httpUpdate.update(client, update_url);
-
-//     bool result = false;
-
-//     switch (ret)
-//     {
-//     case HTTP_UPDATE_FAILED:
-//         Serial.printf(
-//             "HTTP_UPDATE_FAILED Error (%d): %s\n",
-//             httpUpdate.getLastError(),
-//             httpUpdate.getLastErrorString().c_str());
-//         break;
-
-//     case HTTP_UPDATE_NO_UPDATES:
-//         Serial.println("HTTP_UPDATE_NO_UPDATES");
-
-//         break;
-
-//     case HTTP_UPDATE_OK:
-//         result = true;
-//         Serial.println("HTTP_UPDATE_OK");
-
-//         break;
-//     }
-
-//     return result;
-// }
-
-// bool updateFilesystem()
-// {
-//     Serial.println("Updating filesystem image...");
-
-//     WiFiClient client;
-//     const char *update_url = "http://74.234.8.4:5000/download_latest_fs";
-//     t_httpUpdate_return ret = httpUpdate.updateSpiffs(client, update_url);
-//     bool result = false;
-
-//     switch (ret)
-//     {
-//     case HTTP_UPDATE_FAILED:
-//         Serial.printf(
-//             "HTTP_UPDATE_FAILD Error (%d): %s\n",
-//             httpUpdate.getLastError(),
-//             httpUpdate.getLastErrorString().c_str());
-//         break;
-
-//     case HTTP_UPDATE_NO_UPDATES:
-//         Serial.println("HTTP_UPDATE_NO_UPDATES");
-//         break;
-
-//     case HTTP_UPDATE_OK:
-//         result = true;
-//         Serial.println("HTTP_UPDATE_OK");
-//         break;
-//     }
-
-//     return result;
-// }

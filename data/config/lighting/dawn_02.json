@@ -8,13 +8,13 @@
         "minute": 0
     },
     "start": {
-        "red": 92,
-        "blue": 30,
-        "white": 50
+        "red": 46,
+        "blue": 15,
+        "white": 25
     },
     "end": {
-        "red": 92,
-        "blue": 83,
-        "white": 155
+        "red": 30,
+        "blue": 20,
+        "white": 80
     }
 }
